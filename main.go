@@ -46,7 +46,7 @@ import (
 )
 
 //	@title			Giron-Service
-//	@version		0.0.2
+//	@version		0.0.3
 //	@description	An API for managing panel events
 
 //	@contact.name	Gary Greene
