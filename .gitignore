@@ -19,3 +19,12 @@
 
 # Go workspace file
 go.work
+
+# giron-service binary should not be shipped
+/giron-service
+
+# don't import our DB
+/db/GironService.db
+
+# don't ship our config file
+/config/config.json
