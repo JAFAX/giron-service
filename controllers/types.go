@@ -27,7 +27,7 @@ type GironService struct {
 }
 
 type SafeUser struct {
-	Id           int
-	UserName     string
-	CreationDate string
+	Id           int    `json:"Id"`
+	UserName     string `json:"userName"`
+	CreationDate string `json:"creationDate"`
 }

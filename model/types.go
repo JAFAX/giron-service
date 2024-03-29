@@ -19,9 +19,9 @@ package model
 */
 
 type ProposedPanel struct {
-	Topic               string
-	Description         string
-	PanelRequestorEmail string
+	Topic               string `json:"topic"`
+	Description         string `json:"description"`
+	PanelRequestorEmail string `json:"panelRequestorEmail"`
 }
 
 type Panel struct {
@@ -29,19 +29,19 @@ type Panel struct {
 
 type User struct {
 	Id              int    `json:"Id"`
-	UserName        string `json:"UserName"`
-	Status          string `json:"Status"`
-	PasswordHash    string `json:"PasswordHash"`
-	CreationDate    string `json:"CreationDate"`
-	LastChangedDate string `json:"LastChangedDate"`
+	UserName        string `json:"userName"`
+	Status          string `json:"status"`
+	PasswordHash    string `json:"passwordHash"`
+	CreationDate    string `json:"creationDate"`
+	LastChangedDate string `json:"lastChangedDate"`
 }
 
 type ProposedUser struct {
 	Id           int    `json:"Id"`
-	UserName     string `json:"UserName"`
-	Status       string `json:"Status"`
-	Password     string `json:"Password"`
-	CreationDate string `json:"CreationDate"`
+	UserName     string `json:"userName"`
+	Status       string `json:"status"`
+	Password     string `json:"password"`
+	CreationDate string `json:"creationDate"`
 }
 
 type UserStatus struct {
