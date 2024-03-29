@@ -18,6 +18,15 @@ package model
 
 */
 
+type ProposedPanel struct {
+	Topic               string
+	Description         string
+	PanelRequestorEmail string
+}
+
+type Panel struct {
+}
+
 type User struct {
 	Id              int    `json:"Id"`
 	UserName        string `json:"UserName"`
