@@ -68,7 +68,7 @@ definitions:
           $ref: '#/definitions/model.User'
         type: array
     type: object
-host: localhost:8000
+host: localhost:5000
 info:
   contact:
     name: Gary Greene
@@ -78,7 +78,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.1
+  version: 0.0.2
 paths:
   /user:
     post:
