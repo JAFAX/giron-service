@@ -399,11 +399,11 @@ const docTemplate = `{
         "controllers.SafeUser": {
             "type": "object",
             "properties": {
+                "Id": {
+                    "type": "integer"
+                },
                 "creationDate": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "userName": {
                     "type": "string"
@@ -435,19 +435,19 @@ const docTemplate = `{
         "model.ProposedUser": {
             "type": "object",
             "properties": {
-                "CreationDate": {
-                    "type": "string"
-                },
                 "Id": {
                     "type": "integer"
                 },
-                "Password": {
+                "creationDate": {
                     "type": "string"
                 },
-                "Status": {
+                "password": {
                     "type": "string"
                 },
-                "UserName": {
+                "status": {
+                    "type": "string"
+                },
+                "userName": {
                     "type": "string"
                 }
             }
@@ -463,22 +463,22 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
-                "CreationDate": {
-                    "type": "string"
-                },
                 "Id": {
                     "type": "integer"
                 },
-                "LastChangedDate": {
+                "creationDate": {
                     "type": "string"
                 },
-                "PasswordHash": {
+                "lastChangedDate": {
                     "type": "string"
                 },
-                "Status": {
+                "passwordHash": {
                     "type": "string"
                 },
-                "UserName": {
+                "status": {
+                    "type": "string"
+                },
+                "userName": {
                     "type": "string"
                 }
             }
@@ -515,7 +515,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.4",
+	Version:          "0.0.6",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

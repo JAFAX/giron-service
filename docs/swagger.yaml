@@ -2,10 +2,10 @@ basePath: /api/v1
 definitions:
   controllers.SafeUser:
     properties:
+      Id:
+        type: integer
       creationDate:
         type: string
-      id:
-        type: integer
       userName:
         type: string
     type: object
@@ -25,15 +25,15 @@ definitions:
     type: object
   model.ProposedUser:
     properties:
-      CreationDate:
-        type: string
       Id:
         type: integer
-      Password:
+      creationDate:
         type: string
-      Status:
+      password:
         type: string
-      UserName:
+      status:
+        type: string
+      userName:
         type: string
     type: object
   model.SuccessMsg:
@@ -43,17 +43,17 @@ definitions:
     type: object
   model.User:
     properties:
-      CreationDate:
-        type: string
       Id:
         type: integer
-      LastChangedDate:
+      creationDate:
         type: string
-      PasswordHash:
+      lastChangedDate:
         type: string
-      Status:
+      passwordHash:
         type: string
-      UserName:
+      status:
+        type: string
+      userName:
         type: string
     type: object
   model.UserStatusMsg:
@@ -80,7 +80,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.4
+  version: 0.0.6
 paths:
   /panel:
     post:

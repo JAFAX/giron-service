@@ -25,6 +25,9 @@ import (
 )
 
 func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// panel related routes
+	g.GET("/panels")    // get all approved panels
+	g.GET("/panel/:id") // get approved panel details
 	// user related routes
 	g.GET("/user/id/:id", i.GetUserById)
 	g.GET("/user/name/:name", i.GetUserByUserName)
@@ -36,7 +39,12 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// panel related routes
+	g.GET("/panels/all")            // get all panels
 	g.POST("/panel", i.CreatePanel) // create a new panel event
+	g.POST("/panel/location")       // set the location of a panel
+	g.POST("/panel/schedule")       // set the time and date of a panel
+	g.POST("/panel/approve")        // approve a panel
+	g.DELETE("/panel/:id")          // delete a panel
 	// user related routes
 	g.POST("/user", i.CreateUser)                   // create new user
 	g.PATCH("/user/:name", i.ChangeAccountPassword) // update a user password
