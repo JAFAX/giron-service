@@ -22,6 +22,51 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/panel": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Create a new panel event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Create a new panel event",
+                "parameters": [
+                    {
+                        "description": "Panel data",
+                        "name": "panel",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Panel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "security": [
@@ -373,6 +418,9 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Panel": {
+            "type": "object"
+        },
         "model.PasswordChange": {
             "type": "object",
             "properties": {
@@ -467,7 +515,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.2",
+	Version:          "0.0.4",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

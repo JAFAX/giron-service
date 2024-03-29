@@ -11,11 +11,56 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.2"
+        "version": "0.0.4"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
     "paths": {
+        "/panel": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Create a new panel event",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Create a new panel event",
+                "parameters": [
+                    {
+                        "description": "Panel data",
+                        "name": "panel",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Panel"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "security": [
@@ -366,6 +411,9 @@
                     "type": "string"
                 }
             }
+        },
+        "model.Panel": {
+            "type": "object"
         },
         "model.PasswordChange": {
             "type": "object",

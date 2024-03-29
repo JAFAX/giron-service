@@ -14,6 +14,8 @@ definitions:
       error:
         type: string
     type: object
+  model.Panel:
+    type: object
   model.PasswordChange:
     properties:
       newPassword:
@@ -78,8 +80,36 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.2
+  version: 0.0.4
 paths:
+  /panel:
+    post:
+      consumes:
+      - application/json
+      description: Create a new panel event
+      parameters:
+      - description: Panel data
+        in: body
+        name: panel
+        required: true
+        schema:
+          $ref: '#/definitions/model.Panel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Create a new panel event
+      tags:
+      - panels
   /user:
     post:
       consumes:

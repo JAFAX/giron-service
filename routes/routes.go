@@ -35,6 +35,8 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 }
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// panel related routes
+	g.POST("/panel", i.CreatePanel) // create a new panel event
 	// user related routes
 	g.POST("/user", i.CreateUser)                   // create new user
 	g.PATCH("/user/:name", i.ChangeAccountPassword) // update a user password
