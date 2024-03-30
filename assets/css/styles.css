@@ -1,0 +1,12 @@
+.container{
+    padding-top: 10px;
+    display: none
+}
+.title-text{
+    float: left;
+    text-align: center;
+    min-height: 128px;
+    font-size: xx-large;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #fff;
+}
