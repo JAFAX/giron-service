@@ -24,6 +24,18 @@ import (
 	"github.com/JAFAX/giron-service/controllers"
 )
 
+func FePublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// login page
+	g.GET("/", i.LoginUI)      // login UI
+	g.POST("/", i.LoginUIPost) // the actual action of logging a person in
+	g.GET("/logout")           // log out UI
+}
+
+func FePrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// admin panel
+	g.GET("/admin")
+}
+
 func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// panel related routes
 	g.GET("/panels")    // get all approved panels

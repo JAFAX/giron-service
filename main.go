@@ -46,7 +46,7 @@ import (
 )
 
 //	@title			Giron-Service
-//	@version		0.0.6
+//	@version		0.0.8
 //	@description	An API for managing panel events
 
 //	@contact.name	Gary Greene
@@ -89,8 +89,19 @@ func main() {
 	err = model.ConnectDatabase(GironService.ConfStruct.DbPath)
 	helpers.CheckError(err)
 
+	// set up our static assets
+	r.Static("/assets", "./assets")
+	r.LoadHTMLGlob("templates/*.html")
+
 	// some defaults for using session support
 	r.Use(sessions.Sessions("session", cookie.NewStore(globals.Secret)))
+	// frontend
+	fePublic := r.Group("/")
+	routes.FePublicRoutes(fePublic, GironService)
+
+	fePrivate := r.Group("/")
+	fePrivate.Use(middleware.AuthCheck)
+	routes.FePrivateRoutes(fePrivate, GironService)
 
 	// API
 	public := r.Group("/api/v1")
