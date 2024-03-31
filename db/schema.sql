@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.4.4 on Fri Mar 29 16:42:21 2024
+-- File generated with SQLiteStudio v3.4.4 on Sun Mar 31 15:25:36 2024
 --
 -- Text encoding used: UTF-8
 --
@@ -16,19 +16,18 @@ CREATE TABLE IF NOT EXISTS Panels (
     Topic               STRING   NOT NULL
                                  UNIQUE,
     Description         TEXT     NOT NULL,
-    PanelRequestorEmail STRING   NOT NULL
-                                 DEFAULT "",
-    Location            STRING   NOT NULL
-                                 DEFAULT "",
-    ScheduledTime       DATETIME NOT NULL,
+    PanelRequestorEmail STRING   NOT NULL,
+    Location            STRING   DEFAULT "",
+    ScheduledTime       DATETIME DEFAULT "",
     CreatorId           INTEGER  NOT NULL
                                  REFERENCES Users (Id),
     CreationDateTime    DATETIME NOT NULL
                                  DEFAULT (CURRENT_TIMESTAMP),
     ApprovalStatus      BOOL     NOT NULL
                                  DEFAULT (FALSE),
-    ApprovedById        INTEGER  REFERENCES Users (Id),
-    ApprovalDateTime    DATETIME
+    ApprovedById        INTEGER  REFERENCES Users (Id) 
+                                 DEFAULT (0),
+    ApprovalDateTime    DATETIME DEFAULT ""
 );
 
 
