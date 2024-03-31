@@ -18,7 +18,11 @@ package model
 
 */
 
-import "log"
+import (
+	"database/sql"
+	"log"
+	"strconv"
+)
 
 func CreatePanel(p ProposedPanel, id int) (bool, error) {
 	log.Println("INFO: Creating a panel: " + p.Topic)
@@ -84,4 +88,38 @@ func GetPanels() ([]PanelSQL, error) {
 
 	log.Println("INFO: List of all panels retrieved")
 	return panels, nil
+}
+
+func GetPanelById(id int) (Panel, error) {
+	log.Println("INFO: Panel by Id requested: " + strconv.Itoa(id))
+	rec, err := DB.Prepare("SELECT * FROM Panels WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare the DB query!" + string(err.Error()))
+		return Panel{}, err
+	}
+
+	panel := Panel{}
+	err = rec.QueryRow(id).Scan(
+		&panel.Id,
+		&panel.Topic,
+		&panel.Description,
+		&panel.PanelRequestorEmail,
+		&panel.Location,
+		&panel.ScheduledTime,
+		&panel.CreatorId,
+		&panel.CreationDateTime,
+		&panel.ApprovalStatus,
+		&panel.ApprovedById,
+		&panel.ApprovalDateTime,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such panel found in DB: " + string(err.Error()))
+			return Panel{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve panel from DB: " + string(err.Error()))
+		return Panel{}, err
+	}
+
+	return panel, nil
 }

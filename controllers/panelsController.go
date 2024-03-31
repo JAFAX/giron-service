@@ -24,7 +24,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/JAFAX/giron-service/helpers"
 	"github.com/JAFAX/giron-service/model"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -88,10 +87,14 @@ func (g *GironService) CreatePanel(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.PanelList
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/panels [get]
+//	@Router			/panels/all [get]
 func (g *GironService) GetPanels(c *gin.Context) {
 	panels, err := model.GetPanels()
-	helpers.CheckError(err)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of panels: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
 
 	panelSlice := make([]model.Panel, 0)
 	for _, panel := range panels {
@@ -124,9 +127,94 @@ func (g *GironService) GetPanels(c *gin.Context) {
 	}
 
 	if panels == nil {
+		log.Println("WARN: No panels returned")
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
 	} else {
+		log.Println("INFO: Returned approved list of panels")
 		c.IndentedJSON(http.StatusOK, gin.H{"data": panelSlice})
+	}
+}
+
+// GetApprovedPanels Retrieve list of all approved panels
+//
+//	@Summary		Retrieve list of all approved panels
+//	@Description	Retrieve list of all approved panels
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.PanelList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panels [get]
+func (g *GironService) GetApprovedPanels(c *gin.Context) {
+	panels, err := model.GetPanels()
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of panels: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	panelSlice := make([]model.Panel, 0)
+	for _, panel := range panels {
+		if panel.ApprovalStatus {
+			panelEnt := model.Panel{}
+			panelEnt.Id = panel.Id
+			panelEnt.Topic = panel.Topic
+			panelEnt.Description = panel.Description
+			panelEnt.PanelRequestorEmail = panel.PanelRequestorEmail
+			panelEnt.Location = panel.Location
+			if panel.ScheduledTime.Valid {
+				panelEnt.ScheduledTime = panel.ScheduledTime.String
+			} else {
+				panelEnt.ScheduledTime = ""
+			}
+			panelEnt.CreatorId = panel.CreatorId
+			panelEnt.CreationDateTime = panel.CreationDateTime
+			panelEnt.ApprovalStatus = panel.ApprovalStatus
+			if panel.ApprovedById.Valid {
+				panelEnt.ApprovedById = int(panel.ApprovedById.Int64)
+			} else {
+				panelEnt.ApprovedById = 0
+			}
+			if panel.ApprovalDateTime.Valid {
+				panelEnt.ApprovalDateTime = panel.ApprovalDateTime.String
+			} else {
+				panelEnt.ApprovalDateTime = ""
+			}
+
+			panelSlice = append(panelSlice, panelEnt)
+		}
+	}
+
+	if panels == nil {
+		log.Println("WARN: No panels returned")
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		log.Println("INFO: Returned approved list of panels")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": panelSlice})
+	}
+}
+
+// GetPanelById Retrieve panel by Id
+//
+//	@Summary		Retrieve panel by Id
+//	@Description	Retrieve panel by Id
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.Panel
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panel/{Id} [get]
+func (g *GironService) GetPanelById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ent, err := model.GetPanelById(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	if ent.Topic == "" {
+		strId := strconv.Itoa(id)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "no records found with panel id " + strId})
+	} else {
+		c.IndentedJSON(http.StatusOK, ent)
 	}
 
 }
