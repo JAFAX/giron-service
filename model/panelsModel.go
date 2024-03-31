@@ -49,3 +49,39 @@ func CreatePanel(p ProposedPanel, id int) (bool, error) {
 
 	return true, nil
 }
+
+func GetPanels() ([]PanelSQL, error) {
+	log.Println("INFO: List of panel objects requested")
+	rows, err := DB.Query("SELECT * FROM Panels")
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return nil, err
+	}
+
+	log.Println("INFO: Building panel list")
+	panels := make([]PanelSQL, 0)
+	for rows.Next() {
+		panel := PanelSQL{}
+		err = rows.Scan(
+			&panel.Id,
+			&panel.Topic,
+			&panel.Description,
+			&panel.PanelRequestorEmail,
+			&panel.Location,
+			&panel.ScheduledTime,
+			&panel.CreatorId,
+			&panel.CreationDateTime,
+			&panel.ApprovalStatus,
+			&panel.ApprovedById,
+			&panel.ApprovalDateTime,
+		)
+		if err != nil {
+			log.Println("ERROR: Cannot marshal the panel objects!" + string(err.Error()))
+			return nil, err
+		}
+		panels = append(panels, panel)
+	}
+
+	log.Println("INFO: List of all panels retrieved")
+	return panels, nil
+}

@@ -1,5 +1,7 @@
 package model
 
+import "database/sql"
+
 /*
 
   Copyright 2024, JAFAX, Inc.
@@ -24,7 +26,36 @@ type ProposedPanel struct {
 	PanelRequestorEmail string `json:"panelRequestorEmail"`
 }
 
+type PanelList struct {
+	Data []Panel `json:"data"`
+}
+
+type PanelSQL struct {
+	Id                  int            `json:"Id"`
+	Topic               string         `json:"topic"`
+	Description         string         `json:"description"`
+	PanelRequestorEmail string         `json:"panelRequestorEmail"`
+	Location            string         `json:"location"`
+	ScheduledTime       sql.NullString `json:"scheduledTime"`
+	CreatorId           int            `json:"creatorId"`
+	CreationDateTime    string         `json:"creationDateTime"`
+	ApprovalStatus      bool           `json:"approvalStatus"`
+	ApprovedById        sql.NullInt64  `json:"approvedById"`
+	ApprovalDateTime    sql.NullString `json:"approvalDateTime"`
+}
+
 type Panel struct {
+	Id                  int    `json:"Id"`
+	Topic               string `json:"topic"`
+	Description         string `json:"description"`
+	PanelRequestorEmail string `json:"panelRequestorEmail"`
+	Location            string `json:"location"`
+	ScheduledTime       string `json:"scheduledTime"`
+	CreatorId           int    `json:"creatorId"`
+	CreationDateTime    string `json:"creationDateTime"`
+	ApprovalStatus      bool   `json:"approvalStatus"`
+	ApprovedById        int    `json:"approvedById"`
+	ApprovalDateTime    string `json:"approvalDateTime"`
 }
 
 type User struct {

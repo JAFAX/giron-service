@@ -67,6 +67,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/panels": {
+            "get": {
+                "description": "Retrieve list of all panels",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Retrieve list of all panels",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PanelList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "security": [
@@ -419,7 +445,53 @@ const docTemplate = `{
             }
         },
         "model.Panel": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer"
+                },
+                "approvalDateTime": {
+                    "type": "string"
+                },
+                "approvalStatus": {
+                    "type": "boolean"
+                },
+                "approvedById": {
+                    "type": "integer"
+                },
+                "creationDateTime": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "panelRequestorEmail": {
+                    "type": "string"
+                },
+                "scheduledTime": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PanelList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Panel"
+                    }
+                }
+            }
         },
         "model.PasswordChange": {
             "type": "object",

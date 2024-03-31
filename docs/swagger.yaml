@@ -15,6 +15,36 @@ definitions:
         type: string
     type: object
   model.Panel:
+    properties:
+      Id:
+        type: integer
+      approvalDateTime:
+        type: string
+      approvalStatus:
+        type: boolean
+      approvedById:
+        type: integer
+      creationDateTime:
+        type: string
+      creatorId:
+        type: integer
+      description:
+        type: string
+      location:
+        type: string
+      panelRequestorEmail:
+        type: string
+      scheduledTime:
+        type: string
+      topic:
+        type: string
+    type: object
+  model.PanelList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Panel'
+        type: array
     type: object
   model.PasswordChange:
     properties:
@@ -108,6 +138,23 @@ paths:
       security:
       - BasicAuth: []
       summary: Create a new panel event
+      tags:
+      - panels
+  /panels:
+    get:
+      description: Retrieve list of all panels
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PanelList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all panels
       tags:
       - panels
   /user:

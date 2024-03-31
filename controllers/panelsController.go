@@ -24,12 +24,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/JAFAX/giron-service/helpers"
 	"github.com/JAFAX/giron-service/model"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-// CreateDomain Add a panel event
+// CreatePanel Add a panel event
 //
 //	@Summary		Create a new panel event
 //	@Description	Create a new panel event
@@ -41,7 +42,7 @@ import (
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel [post]
-func (i *GironService) CreatePanel(c *gin.Context) {
+func (g *GironService) CreatePanel(c *gin.Context) {
 	var json model.ProposedPanel
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -73,8 +74,59 @@ func (i *GironService) CreatePanel(c *gin.Context) {
 
 	s, err := model.CreatePanel(json, userObject.Id)
 	if s {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Domain has been added to system"})
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel has been added to system"})
 	} else {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
+}
+
+// GetPanels Retrieve list of all panels
+//
+//	@Summary		Retrieve list of all panels
+//	@Description	Retrieve list of all panels
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.PanelList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panels [get]
+func (g *GironService) GetPanels(c *gin.Context) {
+	panels, err := model.GetPanels()
+	helpers.CheckError(err)
+
+	panelSlice := make([]model.Panel, 0)
+	for _, panel := range panels {
+		panelEnt := model.Panel{}
+		panelEnt.Id = panel.Id
+		panelEnt.Topic = panel.Topic
+		panelEnt.Description = panel.Description
+		panelEnt.PanelRequestorEmail = panel.PanelRequestorEmail
+		panelEnt.Location = panel.Location
+		if panel.ScheduledTime.Valid {
+			panelEnt.ScheduledTime = panel.ScheduledTime.String
+		} else {
+			panelEnt.ScheduledTime = ""
+		}
+		panelEnt.CreatorId = panel.CreatorId
+		panelEnt.CreationDateTime = panel.CreationDateTime
+		panelEnt.ApprovalStatus = panel.ApprovalStatus
+		if panel.ApprovedById.Valid {
+			panelEnt.ApprovedById = int(panel.ApprovedById.Int64)
+		} else {
+			panelEnt.ApprovedById = 0
+		}
+		if panel.ApprovalDateTime.Valid {
+			panelEnt.ApprovalDateTime = panel.ApprovalDateTime.String
+		} else {
+			panelEnt.ApprovalDateTime = ""
+		}
+
+		panelSlice = append(panelSlice, panelEnt)
+	}
+
+	if panels == nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		c.IndentedJSON(http.StatusOK, gin.H{"data": panelSlice})
+	}
+
 }
