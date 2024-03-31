@@ -46,7 +46,7 @@ import (
 )
 
 //	@title			Giron-Service
-//	@version		0.0.8
+//	@version		0.0.9
 //	@description	An API for managing panel events
 
 //	@contact.name	Gary Greene
@@ -67,7 +67,7 @@ func main() {
 
 	// lets get our working directory
 	appdir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	helpers.CheckError(err)
+	helpers.FatalCheckError(err)
 
 	// config path is derived from app working directory
 	configDir := filepath.Join(appdir, "config")
@@ -76,9 +76,9 @@ func main() {
 	// and marshall it to the Config struct
 	config := globals.Config{}
 	jsonContent, err := os.ReadFile(filepath.Join(configDir, "config.json"))
-	helpers.CheckError(err)
+	helpers.FatalCheckError(err)
 	err = json.Unmarshal(jsonContent, &config)
-	helpers.CheckError(err)
+	helpers.FatalCheckError(err)
 
 	// create an app object that contains our routes and the configuration
 	GironService := new(controllers.GironService)
@@ -87,7 +87,7 @@ func main() {
 	GironService.ConfStruct = config
 
 	err = model.ConnectDatabase(GironService.ConfStruct.DbPath)
-	helpers.CheckError(err)
+	helpers.FatalCheckError(err)
 
 	// set up our static assets
 	r.Static("/assets", "./assets")

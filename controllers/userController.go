@@ -23,7 +23,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/JAFAX/giron-service/helpers"
 	"github.com/JAFAX/giron-service/model"
 	"github.com/gin-gonic/gin"
 )
@@ -189,7 +188,10 @@ func (i *GironService) SetUserStatus(c *gin.Context) {
 //	@Router			/users [get]
 func (i *GironService) GetUsers(c *gin.Context) {
 	users, err := model.GetUsers()
-	helpers.CheckError(err)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
 
 	safeUsers := make([]SafeUser, 0)
 	for _, user := range users {
@@ -221,7 +223,10 @@ func (i *GironService) GetUsers(c *gin.Context) {
 func (i *GironService) GetUserById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ent, err := model.GetUserById(id)
-	helpers.CheckError(err)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
 
 	// don't return the password hash
 	safeUser := new(SafeUser)
@@ -250,7 +255,10 @@ func (i *GironService) GetUserById(c *gin.Context) {
 func (i *GironService) GetUserByUserName(c *gin.Context) {
 	username := c.Param("name")
 	ent, err := model.GetUserByUserName(username)
-	helpers.CheckError(err)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
 
 	// don't return the password hash
 	safeUser := new(SafeUser)

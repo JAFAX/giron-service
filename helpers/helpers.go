@@ -56,7 +56,7 @@ func EmptyUserPass(username, password string) bool {
 	return strings.Trim(username, " ") == "" || strings.Trim(password, " ") == ""
 }
 
-func CheckError(err error) {
+func FatalCheckError(err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
