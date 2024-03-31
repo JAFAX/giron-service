@@ -14,6 +14,11 @@ definitions:
       error:
         type: string
     type: object
+  model.Location:
+    properties:
+      location:
+        type: string
+    type: object
   model.Panel:
     properties:
       Id:
@@ -110,7 +115,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.8
+  version: 0.0.11
 paths:
   /panel:
     post:
@@ -155,6 +160,23 @@ paths:
           schema:
             $ref: '#/definitions/model.FailureMsg'
       summary: Retrieve panel by Id
+      tags:
+      - panels
+  /panel/{Id}/location:
+    get:
+      description: Retrieve panel location by the panel Id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Location'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve panel location by the panel Id
       tags:
       - panels
   /panels:

@@ -38,14 +38,14 @@ func FePrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 
 func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// panel related routes
-	g.GET("/panels", i.GetApprovedPanels) // get all approved panels
-	g.GET("/panel/:id", i.GetPanelById)   // get approved panel details
-	g.GET("/panel/:id/location")          // get the location of a panel
-	g.GET("/panel/:id/schedule")          // get the time and date of a panel
+	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
+	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
+	g.GET("/panel/:id/location", i.GetPanelLocationByPanelId) // get the location of a panel
+	g.GET("/panel/:id/schedule")                              // get the time and date of a panel
 	// user related routes
-	g.GET("/user/id/:id", i.GetUserById)
-	g.GET("/user/name/:name", i.GetUserByUserName)
-	g.GET("/users", i.GetUsers)
+	g.GET("/user/id/:id", i.GetUserById)           // get user by id
+	g.GET("/user/name/:name", i.GetUserByUserName) // get user by username
+	g.GET("/users", i.GetUsers)                    // get users
 	// service related routes
 	g.OPTIONS("/")   // API options
 	g.GET("/health") // service health

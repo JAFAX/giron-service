@@ -93,6 +93,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/panel/{Id}/location": {
+            "get": {
+                "description": "Retrieve panel location by the panel Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Retrieve panel location by the panel Id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Location"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panels": {
             "get": {
                 "description": "Retrieve list of all approved panels",
@@ -496,6 +522,14 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Location": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Panel": {
             "type": "object",
             "properties": {
@@ -639,7 +673,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.8",
+	Version:          "0.0.11",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

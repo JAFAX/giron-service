@@ -123,3 +123,26 @@ func GetPanelById(id int) (Panel, error) {
 
 	return panel, nil
 }
+
+func GetPanelLocationByPanelId(id int) (Location, error) {
+	log.Println("INFO: Panel location by panel Id requested: " + strconv.Itoa(id))
+	rec, err := DB.Prepare("SELECT Location FROM Panels WHERE Id = ?")
+	if err != nil {
+		return Location{}, err
+	}
+
+	location := Location{}
+	err = rec.QueryRow(id).Scan(
+		&location.Location,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such panel found in DB: " + string(err.Error()))
+			return Location{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve panel location from DB: " + string(err.Error()))
+		return Location{}, err
+	}
+
+	return location, nil
+}

@@ -20,6 +20,10 @@ import "database/sql"
 
 */
 
+type Location struct {
+	Location string `json:"location"`
+}
+
 type ProposedPanel struct {
 	Topic               string `json:"topic"`
 	Description         string `json:"description"`

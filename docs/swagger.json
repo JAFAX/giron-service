@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.8"
+        "version": "0.0.11"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -76,6 +76,32 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Panel"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/panel/{Id}/location": {
+            "get": {
+                "description": "Retrieve panel location by the panel Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Retrieve panel location by the panel Id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Location"
                         }
                     },
                     "400": {
@@ -486,6 +512,14 @@
             "type": "object",
             "properties": {
                 "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Location": {
+            "type": "object",
+            "properties": {
+                "location": {
                     "type": "string"
                 }
             }
