@@ -172,3 +172,37 @@ func GetPanelScheduleByPanelId(id int) (Schedule, error) {
 
 	return schedule, nil
 }
+
+func SetPanelLocation(id int, j Location) (bool, error) {
+	log.Println("INFO: Set user status for panel Id '" + strconv.Itoa(id) + "'")
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, err
+	}
+
+	q, err := DB.Prepare("UPDATE Panels SET Location = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, err
+	}
+	// ensure the UserStatus.Status value is either 'enabled' or 'locked'
+	log.Println("INFO: panel Id to set location of: " + strconv.Itoa(id))
+	log.Println("INFO: requested location to assign the panel to: " + j.Location)
+	// TODO: Add a test for valid locations after we add the location table
+
+	result, err := q.Exec(j.Location, id)
+	if err != nil {
+		log.Println("ERROR: Could not execute query for panel Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+	numberOfRows, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: SQL result: Rows: " + strconv.Itoa(int(numberOfRows)))
+	return true, nil
+}

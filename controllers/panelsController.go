@@ -258,3 +258,34 @@ func (g *GironService) GetPanelScheduleByPanelId(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, ent)
 }
+
+// SetPanelLocation Set panel location
+//
+//	@Summary		Set panel location
+//	@Description	Set panel location
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panel/{Id}/location [post]
+func (g *GironService) SetPanelLocation(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+	var json model.Location
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// we don't need the status, since the error speaks for itself
+	_, err = model.SetPanelLocation(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
+}

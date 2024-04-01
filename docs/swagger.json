@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.11"
+        "version": "0.0.13"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -102,6 +102,30 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Location"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Set panel location",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Set panel location",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
                         }
                     },
                     "400": {
