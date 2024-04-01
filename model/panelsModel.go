@@ -73,6 +73,7 @@ func GetPanels() ([]PanelSQL, error) {
 			&panel.PanelRequestorEmail,
 			&panel.Location,
 			&panel.ScheduledTime,
+			&panel.DurationInMinutes,
 			&panel.CreatorId,
 			&panel.CreationDateTime,
 			&panel.ApprovalStatus,
@@ -106,6 +107,7 @@ func GetPanelById(id int) (Panel, error) {
 		&panel.PanelRequestorEmail,
 		&panel.Location,
 		&panel.ScheduledTime,
+		&panel.DurationInMinutes,
 		&panel.CreatorId,
 		&panel.CreationDateTime,
 		&panel.ApprovalStatus,
@@ -145,4 +147,28 @@ func GetPanelLocationByPanelId(id int) (Location, error) {
 	}
 
 	return location, nil
+}
+
+func GetPanelScheduleByPanelId(id int) (Schedule, error) {
+	log.Println("INFO: Panel schedule by panel Id requested: " + strconv.Itoa(id))
+	rec, err := DB.Prepare("SELECT ScheduledTime, DurationInMinutes FROM Panels WHERE Id = ?")
+	if err != nil {
+		return Schedule{}, err
+	}
+
+	schedule := Schedule{}
+	err = rec.QueryRow(id).Scan(
+		&schedule.StartTime,
+		&schedule.DurationInMinutes,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such panel found in DB: " + string(err.Error()))
+			return Schedule{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve panel schedule from DB: " + string(err.Error()))
+		return Schedule{}, err
+	}
+
+	return schedule, nil
 }

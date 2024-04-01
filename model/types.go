@@ -22,6 +22,7 @@ import "database/sql"
 
 type Location struct {
 	Location string `json:"location"`
+	// Floor    string `json:"locationFloor"`
 }
 
 type ProposedPanel struct {
@@ -41,6 +42,7 @@ type PanelSQL struct {
 	PanelRequestorEmail string         `json:"panelRequestorEmail"`
 	Location            string         `json:"location"`
 	ScheduledTime       sql.NullString `json:"scheduledTime"`
+	DurationInMinutes   int            `json:"durationInMinutes"`
 	CreatorId           int            `json:"creatorId"`
 	CreationDateTime    string         `json:"creationDateTime"`
 	ApprovalStatus      bool           `json:"approvalStatus"`
@@ -55,11 +57,17 @@ type Panel struct {
 	PanelRequestorEmail string `json:"panelRequestorEmail"`
 	Location            string `json:"location"`
 	ScheduledTime       string `json:"scheduledTime"`
+	DurationInMinutes   int    `json:"durationInMinutes"`
 	CreatorId           int    `json:"creatorId"`
 	CreationDateTime    string `json:"creationDateTime"`
 	ApprovalStatus      bool   `json:"approvalStatus"`
 	ApprovedById        int    `json:"approvedById"`
 	ApprovalDateTime    string `json:"approvalDateTime"`
+}
+
+type Schedule struct {
+	StartTime         string `json:"startTime"`
+	DurationInMinutes int    `json:"durationInMinutes"`
 }
 
 type User struct {

@@ -41,7 +41,7 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
 	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
 	g.GET("/panel/:id/location", i.GetPanelLocationByPanelId) // get the location of a panel
-	g.GET("/panel/:id/schedule")                              // get the time and date of a panel
+	g.GET("/panel/:id/schedule", i.GetPanelScheduleByPanelId) // get the time and date of a panel
 	// user related routes
 	g.GET("/user/id/:id", i.GetUserById)           // get user by id
 	g.GET("/user/name/:name", i.GetUserByUserName) // get user by username

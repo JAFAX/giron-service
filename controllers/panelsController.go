@@ -238,3 +238,23 @@ func (g *GironService) GetPanelLocationByPanelId(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, ent)
 }
+
+// GetPanelScheduleById Retrieve panel schedule by the panel Id
+//
+//	@Summary		Retrieve panel schedule by the panel Id
+//	@Description	Retrieve panel schedule by the panel Id
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.Schedule
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panel/{Id}/schedule [get]
+func (g *GironService) GetPanelScheduleByPanelId(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ent, err := model.GetPanelScheduleByPanelId(id)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, ent)
+}

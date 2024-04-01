@@ -119,6 +119,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/panel/{Id}/schedule": {
+            "get": {
+                "description": "Retrieve panel schedule by the panel Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Retrieve panel schedule by the panel Id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Schedule"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panels": {
             "get": {
                 "description": "Retrieve list of all approved panels",
@@ -554,6 +580,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "durationInMinutes": {
+                    "type": "integer"
+                },
                 "location": {
                     "type": "string"
                 },
@@ -606,6 +635,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Schedule": {
+            "type": "object",
+            "properties": {
+                "durationInMinutes": {
+                    "type": "integer"
+                },
+                "startTime": {
                     "type": "string"
                 }
             }
