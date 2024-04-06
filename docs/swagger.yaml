@@ -16,6 +16,16 @@ definitions:
     type: object
   model.Location:
     properties:
+      Id:
+        type: integer
+      buildingId:
+        type: integer
+      creationDateTime:
+        type: string
+      creatorId:
+        type: integer
+      floorId:
+        type: integer
       location:
         type: string
     type: object
@@ -124,7 +134,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.13
+  version: 0.0.14
 paths:
   /panel:
     post:

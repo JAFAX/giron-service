@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.13"
+        "version": "0.0.14"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -569,6 +569,21 @@
         "model.Location": {
             "type": "object",
             "properties": {
+                "Id": {
+                    "type": "integer"
+                },
+                "buildingId": {
+                    "type": "integer"
+                },
+                "creationDateTime": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "integer"
+                },
+                "floorId": {
+                    "type": "integer"
+                },
                 "location": {
                     "type": "string"
                 }
