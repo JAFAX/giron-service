@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.4.4 on Mon Apr 1 14:27:39 2024
+-- File generated with SQLiteStudio v3.4.4 on Sat Apr 6 12:04:50 2024
 --
 -- Text encoding used: UTF-8
 --
@@ -15,8 +15,28 @@ CREATE TABLE IF NOT EXISTS BuildingFloors (
                           NOT NULL,
     FloorName    STRING   NOT NULL
                           UNIQUE,
+    BuildingId   INTEGER  NOT NULL
+                          REFERENCES Buildings (Id),
     CreatorId    INTEGER  NOT NULL
                           REFERENCES Users (Id),
+    CreationDate DATETIME NOT NULL
+                          DEFAULT (CURRENT_TIMESTAMP) 
+);
+
+
+-- Table: Buildings
+DROP TABLE IF EXISTS Buildings;
+
+CREATE TABLE IF NOT EXISTS Buildings (
+    Id           INTEGER  PRIMARY KEY AUTOINCREMENT
+                          UNIQUE
+                          NOT NULL,
+    Name         STRING   UNIQUE
+                          NOT NULL,
+    City         STRING   NOT NULL,
+    Region       STRING   NOT NULL,
+    CreatorId    INTEGER  REFERENCES Users (Id) 
+                          NOT NULL,
     CreationDate DATETIME NOT NULL
                           DEFAULT (CURRENT_TIMESTAMP) 
 );
@@ -32,6 +52,8 @@ CREATE TABLE IF NOT EXISTS Locations (
     RoomName     STRING   NOT NULL
                           UNIQUE,
     FloorId      INTEGER  REFERENCES BuildingFloors (Id) 
+                          NOT NULL,
+    BuildingId   INTEGER  REFERENCES Buildings (Id) 
                           NOT NULL,
     CreatorId    INTEGER  REFERENCES Users (Id) 
                           NOT NULL,

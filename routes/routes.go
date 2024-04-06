@@ -37,6 +37,15 @@ func FePrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 }
 
 func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// building related routes
+	g.GET("/buildings")
+	g.GET("/building/:id")
+	// floor related routes
+	g.GET("/floors")
+	g.GET("/floor/:id")
+	// location related routes
+	g.GET("/locations")
+	g.GET("/location/:id")
 	// panel related routes
 	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
 	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
@@ -52,6 +61,15 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 }
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
+	// building related routes
+	g.POST("/building")
+	g.PATCH("/building/:id")
+	// floor related routes
+	g.POST("/floor")
+	g.PATCH("/floor/:id")
+	// location related routes
+	g.POST("/location")
+	g.PATCH("/location/:id")
 	// panel related routes
 	g.GET("/panels/all", i.GetPanels)                 // get all panels
 	g.POST("/panel", i.CreatePanel)                   // create a new panel event

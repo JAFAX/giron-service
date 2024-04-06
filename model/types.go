@@ -20,9 +20,30 @@ import "database/sql"
 
 */
 
+type Building struct {
+	Id          int    `json:"Id"`
+	Name        string `json:"name"`
+	City        string `json:"city"`
+	Region      string `json:"region"`
+	CreatorId   int    `json:"creatorId"`
+	CreatorDate string `json:"creationDateTime"`
+}
+
+type BuildingFloor struct {
+	Id           int    `json:"Id"`
+	FloorName    string `json:"floorName"`
+	BuildingId   int    `json:"buildingId"`
+	CreatorId    int    `json:"creatorId"`
+	CreationDate string `json:"creationDateTime"`
+}
+
 type Location struct {
-	Location string `json:"location"`
-	// Floor    string `json:"locationFloor"`
+	Id           int    `json:"Id"`
+	Location     string `json:"location"`
+	FloorId      int    `json:"floorId"`
+	BuildingId   int    `json:"buildingId"`
+	CreatorId    int    `json:"creatorId"`
+	CreationDate string `json:"creationDateTime"`
 }
 
 type ProposedPanel struct {
@@ -63,6 +84,14 @@ type Panel struct {
 	ApprovalStatus      bool   `json:"approvalStatus"`
 	ApprovedById        int    `json:"approvedById"`
 	ApprovalDateTime    string `json:"approvalDateTime"`
+}
+
+type ScheduledEvent struct {
+	Id                int    `json:"Id"`
+	LocationId        int    `json:"locationId"`
+	EventId           int    `json:"eventId"`
+	ScheduledTime     string `json:"scheduledTime"`
+	DurationInMinutes int    `json:"durationInMinutes"`
 }
 
 type Schedule struct {
