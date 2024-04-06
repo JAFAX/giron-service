@@ -21,12 +21,12 @@ import "database/sql"
 */
 
 type Building struct {
-	Id          int    `json:"Id"`
-	Name        string `json:"name"`
-	City        string `json:"city"`
-	Region      string `json:"region"`
-	CreatorId   int    `json:"creatorId"`
-	CreatorDate string `json:"creationDateTime"`
+	Id           int    `json:"Id"`
+	Name         string `json:"name"`
+	City         string `json:"city"`
+	Region       string `json:"region"`
+	CreatorId    int    `json:"creatorId"`
+	CreationDate string `json:"creationDateTime"`
 }
 
 type BuildingFloor struct {
@@ -35,6 +35,12 @@ type BuildingFloor struct {
 	BuildingId   int    `json:"buildingId"`
 	CreatorId    int    `json:"creatorId"`
 	CreationDate string `json:"creationDateTime"`
+}
+
+type BuildingUpdate struct {
+	Name   string `json:"name"`
+	City   string `json:"city"`
+	Region string `json:"region"`
 }
 
 type Location struct {
@@ -52,8 +58,16 @@ type ProposedPanel struct {
 	PanelRequestorEmail string `json:"panelRequestorEmail"`
 }
 
+type BuildingList struct {
+	Data []Building `json:"data"`
+}
+
 type PanelList struct {
 	Data []Panel `json:"data"`
+}
+
+type UsersList struct {
+	Data []User `json:"data"`
 }
 
 type PanelSQL struct {
@@ -108,6 +122,13 @@ type User struct {
 	LastChangedDate string `json:"lastChangedDate"`
 }
 
+type ProposedBuilding struct {
+	Name      string `json:"name"`
+	City      string `json:"city"`
+	Region    string `json:"region"`
+	CreatorId string `json:"creatorId"`
+}
+
 type ProposedUser struct {
 	Id           int    `json:"Id"`
 	UserName     string `json:"userName"`
@@ -136,8 +157,4 @@ type UserStatusMsg struct {
 type PasswordChange struct {
 	OldPassword string `json:"oldPassword"`
 	NewPassword string `json:"newPassword"`
-}
-
-type UsersList struct {
-	Data []User `json:"data"`
 }

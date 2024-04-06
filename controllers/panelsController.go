@@ -216,7 +216,6 @@ func (g *GironService) GetPanelById(c *gin.Context) {
 	} else {
 		c.IndentedJSON(http.StatusOK, ent)
 	}
-
 }
 
 // GetPanelLocationById Retrieve panel location by the panel Id

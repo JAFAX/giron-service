@@ -9,6 +9,28 @@ definitions:
       userName:
         type: string
     type: object
+  model.Building:
+    properties:
+      Id:
+        type: integer
+      city:
+        type: string
+      creationDateTime:
+        type: string
+      creatorId:
+        type: integer
+      name:
+        type: string
+      region:
+        type: string
+    type: object
+  model.BuildingList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Building'
+        type: array
+    type: object
   model.FailureMsg:
     properties:
       error:
@@ -68,6 +90,17 @@ definitions:
       newPassword:
         type: string
       oldPassword:
+        type: string
+    type: object
+  model.ProposedBuilding:
+    properties:
+      city:
+        type: string
+      creatorId:
+        type: string
+      name:
+        type: string
+      region:
         type: string
     type: object
   model.ProposedUser:
@@ -134,8 +167,87 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.14
+  version: 0.0.15
 paths:
+  /building:
+    post:
+      consumes:
+      - application/json
+      description: Create a new building
+      parameters:
+      - description: Building data
+        in: body
+        name: building
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProposedBuilding'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Create a new building
+      tags:
+      - buildings
+  /building/:id:
+    get:
+      description: Retrieve building by Id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Building'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve building by Id
+      tags:
+      - buildings
+  /building/{Id}:
+    post:
+      description: Update building information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Update building information
+      tags:
+      - buildings
+  /buildings:
+    get:
+      description: Retrieve list of all panels
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BuildingList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all panels
+      tags:
+      - buildings
   /panel:
     post:
       consumes:

@@ -26,9 +26,9 @@ import (
 
 func FePublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// login page
-	g.GET("/", i.LoginUI)      // login UI
-	g.POST("/", i.LoginUIPost) // the actual action of logging a person in
-	g.GET("/logout")           // log out UI
+	g.GET("/", i.LoginUI)           // login UI
+	g.POST("/login", i.LoginUIPost) // the actual action of logging a person in
+	g.GET("/logout")                // log out UI
 }
 
 func FePrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
@@ -38,8 +38,8 @@ func FePrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 
 func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// building related routes
-	g.GET("/buildings")
-	g.GET("/building/:id")
+	g.GET("/buildings", i.GetBuildings)       // get all buildings
+	g.GET("/building/:id", i.GetBuildingById) // get building by Id
 	// floor related routes
 	g.GET("/floors")
 	g.GET("/floor/:id")
@@ -62,8 +62,8 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// building related routes
-	g.POST("/building")
-	g.PATCH("/building/:id")
+	g.POST("/building", i.CreateBuilding)          // create a new building
+	g.PATCH("/building/:id", i.UpdateBuildingById) // update a building
 	// floor related routes
 	g.POST("/floor")
 	g.PATCH("/floor/:id")
