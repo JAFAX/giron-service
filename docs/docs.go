@@ -67,7 +67,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/building/:id": {
+        "/building/{id}": {
             "get": {
                 "description": "Retrieve building by Id",
                 "produces": [
@@ -91,10 +91,8 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/building/{Id}": {
-            "post": {
+            },
+            "patch": {
                 "description": "Update building information",
                 "produces": [
                     "application/json"
@@ -190,7 +188,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/panel/{Id}": {
+        "/panel/{id}": {
             "get": {
                 "description": "Retrieve panel by Id",
                 "produces": [
@@ -216,7 +214,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/panel/{Id}/location": {
+        "/panel/{id}/location": {
             "get": {
                 "description": "Retrieve panel location by the panel Id",
                 "produces": [
@@ -266,7 +264,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/panel/{Id}/schedule": {
+        "/panel/{id}/schedule": {
             "get": {
                 "description": "Retrieve panel schedule by the panel Id",
                 "produces": [

@@ -201,7 +201,7 @@ func (g *GironService) GetApprovedPanels(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.Panel
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/panel/{Id} [get]
+//	@Router			/panel/{id} [get]
 func (g *GironService) GetPanelById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ent, err := model.GetPanelById(id)
@@ -226,7 +226,7 @@ func (g *GironService) GetPanelById(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.Location
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/panel/{Id}/location [get]
+//	@Router			/panel/{id}/location [get]
 func (g *GironService) GetPanelLocationByPanelId(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ent, err := model.GetPanelLocationByPanelId(id)
@@ -246,7 +246,7 @@ func (g *GironService) GetPanelLocationByPanelId(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.Schedule
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/panel/{Id}/schedule [get]
+//	@Router			/panel/{id}/schedule [get]
 func (g *GironService) GetPanelScheduleByPanelId(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ent, err := model.GetPanelScheduleByPanelId(id)
@@ -266,7 +266,7 @@ func (g *GironService) GetPanelScheduleByPanelId(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/panel/{Id}/location [post]
+//	@Router			/panel/{id}/location [post]
 func (g *GironService) SetPanelLocation(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

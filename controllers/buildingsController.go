@@ -126,7 +126,7 @@ func (g *GironService) GetBuildings(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.Building
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/building/:id [get]
+//	@Router			/building/{id} [get]
 func (g *GironService) GetBuildingById(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	ent, err := model.GetBuildingById(id)
@@ -153,7 +153,7 @@ func (g *GironService) GetBuildingById(c *gin.Context) {
 //	@Produce		json
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
-//	@Router			/building/{Id} [post]
+//	@Router			/building/{id} [patch]
 func (g *GironService) UpdateBuildingById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

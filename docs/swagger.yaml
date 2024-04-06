@@ -197,7 +197,7 @@ paths:
       summary: Create a new building
       tags:
       - buildings
-  /building/:id:
+  /building/{id}:
     get:
       description: Retrieve building by Id
       produces:
@@ -214,8 +214,7 @@ paths:
       summary: Retrieve building by Id
       tags:
       - buildings
-  /building/{Id}:
-    post:
+    patch:
       description: Update building information
       produces:
       - application/json
@@ -276,7 +275,7 @@ paths:
       summary: Create a new panel event
       tags:
       - panels
-  /panel/{Id}:
+  /panel/{id}:
     get:
       description: Retrieve panel by Id
       produces:
@@ -293,7 +292,7 @@ paths:
       summary: Retrieve panel by Id
       tags:
       - panels
-  /panel/{Id}/location:
+  /panel/{id}/location:
     get:
       description: Retrieve panel location by the panel Id
       produces:
@@ -326,7 +325,7 @@ paths:
       summary: Set panel location
       tags:
       - panels
-  /panel/{Id}/schedule:
+  /panel/{id}/schedule:
     get:
       description: Retrieve panel schedule by the panel Id
       produces:
