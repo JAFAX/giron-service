@@ -108,7 +108,7 @@ func GetBuildingIdByName(buildingName string) (int, error) {
 }
 
 func GetBuildings() ([]Building, error) {
-	log.Println("INFO: List of panel objects requested")
+	log.Println("INFO: List of building objects requested")
 	rows, err := DB.Query("SELECT * FROM Buildings")
 	if err != nil {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
@@ -128,13 +128,13 @@ func GetBuildings() ([]Building, error) {
 			&building.CreationDate,
 		)
 		if err != nil {
-			log.Println("ERROR: Cannot marshal the panel objects!" + string(err.Error()))
+			log.Println("ERROR: Cannot marshal the building objects!" + string(err.Error()))
 			return nil, err
 		}
 		buildings = append(buildings, building)
 	}
 
-	log.Println("INFO: List of all panels retrieved")
+	log.Println("INFO: List of all buildings retrieved")
 	return buildings, nil
 }
 

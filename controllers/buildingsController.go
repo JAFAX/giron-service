@@ -96,25 +96,12 @@ func (g *GironService) GetBuildings(c *gin.Context) {
 		return
 	}
 
-	buildingSlice := make([]model.Building, 0)
-	for _, building := range buildingSlice {
-		buildingEnt := model.Building{}
-		buildingEnt.Id = building.Id
-		buildingEnt.Name = building.Name
-		buildingEnt.City = building.City
-		buildingEnt.Region = building.Region
-		buildingEnt.CreatorId = building.CreatorId
-		buildingEnt.CreationDate = building.CreationDate
-
-		buildingSlice = append(buildingSlice, buildingEnt)
-	}
-
 	if buildings == nil {
-		log.Println("WARN: No panels returned")
+		log.Println("WARN: No buildings returned")
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
 	} else {
-		log.Println("INFO: Returned approved list of panels")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": buildingSlice})
+		log.Println("INFO: Returned list of buildings")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": buildings})
 	}
 }
 
