@@ -85,6 +85,7 @@ func (g *GironService) CreatePanel(c *gin.Context) {
 //	@Description	Retrieve list of all panels
 //	@Tags			panels
 //	@Produce		json
+//	@Security		BasicAuth
 //	@Success		200	{object}	model.PanelList
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panels/all [get]
@@ -199,6 +200,7 @@ func (g *GironService) GetApprovedPanels(c *gin.Context) {
 //	@Description	Retrieve panel by Id
 //	@Tags			panels
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
 //	@Success		200	{object}	model.Panel
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id} [get]
@@ -224,6 +226,7 @@ func (g *GironService) GetPanelById(c *gin.Context) {
 //	@Description	Retrieve panel location by the panel Id
 //	@Tags			panels
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
 //	@Success		200	{object}	model.Location
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id}/location [get]
@@ -244,6 +247,7 @@ func (g *GironService) GetPanelLocationByPanelId(c *gin.Context) {
 //	@Description	Retrieve panel schedule by the panel Id
 //	@Tags			panels
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
 //	@Success		200	{object}	model.Schedule
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id}/schedule [get]
@@ -264,6 +268,8 @@ func (g *GironService) GetPanelScheduleByPanelId(c *gin.Context) {
 //	@Description	Set panel location
 //	@Tags			panels
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
+//	@Security		BasicAuth
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id}/location [post]

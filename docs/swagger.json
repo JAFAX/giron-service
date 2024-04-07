@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.18"
+        "version": "0.0.19"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -137,6 +137,11 @@
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Update building information",
                 "produces": [
                     "application/json"
@@ -392,6 +397,15 @@
                     "panels"
                 ],
                 "summary": "Retrieve panel by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -418,6 +432,15 @@
                     "panels"
                 ],
                 "summary": "Retrieve panel location by the panel Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -434,6 +457,11 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Set panel location",
                 "produces": [
                     "application/json"
@@ -442,6 +470,15 @@
                     "panels"
                 ],
                 "summary": "Set panel location",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -468,6 +505,15 @@
                     "panels"
                 ],
                 "summary": "Retrieve panel schedule by the panel Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -512,6 +558,11 @@
         },
         "/panels/all": {
             "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Retrieve list of all panels",
                 "produces": [
                     "application/json"

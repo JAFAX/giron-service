@@ -143,6 +143,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Update building information",
                 "produces": [
                     "application/json"
@@ -398,6 +403,15 @@ const docTemplate = `{
                     "panels"
                 ],
                 "summary": "Retrieve panel by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -424,6 +438,15 @@ const docTemplate = `{
                     "panels"
                 ],
                 "summary": "Retrieve panel location by the panel Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -440,6 +463,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Set panel location",
                 "produces": [
                     "application/json"
@@ -448,6 +476,15 @@ const docTemplate = `{
                     "panels"
                 ],
                 "summary": "Set panel location",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -474,6 +511,15 @@ const docTemplate = `{
                     "panels"
                 ],
                 "summary": "Retrieve panel schedule by the panel Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -518,6 +564,11 @@ const docTemplate = `{
         },
         "/panels/all": {
             "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Retrieve list of all panels",
                 "produces": [
                     "application/json"
@@ -1166,7 +1217,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.18",
+	Version:          "0.0.19",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

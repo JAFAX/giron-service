@@ -140,6 +140,7 @@ func (g *GironService) GetBuildingById(c *gin.Context) {
 //	@Tags			buildings
 //	@Produce		json
 //	@Param			id	path	string	true	"Building Id"
+//	@Security		BasicAuth
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [patch]

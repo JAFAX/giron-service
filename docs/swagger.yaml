@@ -194,7 +194,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.18
+  version: 0.0.19
 paths:
   /building:
     post:
@@ -292,6 +292,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
       summary: Update building information
       tags:
       - buildings
@@ -434,6 +436,12 @@ paths:
   /panel/{id}:
     get:
       description: Retrieve panel by Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -451,6 +459,12 @@ paths:
   /panel/{id}/location:
     get:
       description: Retrieve panel location by the panel Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -467,6 +481,12 @@ paths:
       - panels
     post:
       description: Set panel location
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -478,12 +498,20 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
       summary: Set panel location
       tags:
       - panels
   /panel/{id}/schedule:
     get:
       description: Retrieve panel schedule by the panel Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -529,6 +557,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
       summary: Retrieve list of all panels
       tags:
       - panels
