@@ -137,7 +137,7 @@ type ProposedBuilding struct {
 	Name      string `json:"name"`
 	City      string `json:"city"`
 	Region    string `json:"region"`
-	CreatorId string `json:"creatorId"`
+	CreatorId int    `json:"creatorId"`
 }
 
 type ProposedUser struct {
