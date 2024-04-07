@@ -223,6 +223,32 @@
                 }
             }
         },
+        "/floors": {
+            "get": {
+                "description": "Retrieve list of all floor records",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Retrieve list of all floor records",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FloorList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panel": {
             "post": {
                 "security": [
@@ -788,6 +814,26 @@
                 }
             }
         },
+        "model.BuildingFloor": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer"
+                },
+                "buildingId": {
+                    "type": "integer"
+                },
+                "creationDateTime": {
+                    "type": "string"
+                },
+                "creatorId": {
+                    "type": "integer"
+                },
+                "floorName": {
+                    "type": "string"
+                }
+            }
+        },
         "model.BuildingList": {
             "type": "object",
             "properties": {
@@ -804,6 +850,17 @@
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "model.FloorList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.BuildingFloor"
+                    }
                 }
             }
         },

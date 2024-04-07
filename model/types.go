@@ -69,6 +69,10 @@ type BuildingList struct {
 	Data []Building `json:"data"`
 }
 
+type FloorList struct {
+	Data []BuildingFloor `json:"data"`
+}
+
 type PanelList struct {
 	Data []Panel `json:"data"`
 }

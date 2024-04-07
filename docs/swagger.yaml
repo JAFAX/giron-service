@@ -24,6 +24,19 @@ definitions:
       region:
         type: string
     type: object
+  model.BuildingFloor:
+    properties:
+      Id:
+        type: integer
+      buildingId:
+        type: integer
+      creationDateTime:
+        type: string
+      creatorId:
+        type: integer
+      floorName:
+        type: string
+    type: object
   model.BuildingList:
     properties:
       data:
@@ -35,6 +48,13 @@ definitions:
     properties:
       error:
         type: string
+    type: object
+  model.FloorList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.BuildingFloor'
+        type: array
     type: object
   model.Location:
     properties:
@@ -306,6 +326,23 @@ paths:
       security:
       - BasicAuth: []
       summary: Create a new floor
+      tags:
+      - floors
+  /floors:
+    get:
+      description: Retrieve list of all floor records
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FloorList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all floor records
       tags:
       - floors
   /panel:
