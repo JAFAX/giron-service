@@ -186,7 +186,7 @@ func (g *GironService) DeleteBuildingById(c *gin.Context) {
 
 	if status {
 		idString := strconv.Itoa(id)
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Building Id '" + idString + " has been removed from system"})
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Building Id '" + idString + "' has been removed from system"})
 	} else {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building!"})
 	}
