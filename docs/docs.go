@@ -77,6 +77,15 @@ const docTemplate = `{
                     "buildings"
                 ],
                 "summary": "Retrieve building by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -142,6 +151,15 @@ const docTemplate = `{
                     "buildings"
                 ],
                 "summary": "Update building information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -229,6 +247,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/floor/{id}": {
+            "get": {
+                "description": "Retrieve floor based on Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Retrieve floor based on Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Floor Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BuildingFloor"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/floors": {
             "get": {
                 "description": "Retrieve list of all floor records",
@@ -239,6 +292,41 @@ const docTemplate = `{
                     "floors"
                 ],
                 "summary": "Retrieve list of all floor records",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FloorList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/floors/buildingId/{id}": {
+            "get": {
+                "description": "Retrieve list of all floors based on building Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Retrieve list of all floors based on building Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -963,7 +1051,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "creatorId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -1078,7 +1166,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.16",
+	Version:          "0.0.18",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

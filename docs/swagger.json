@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.16"
+        "version": "0.0.18"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -71,6 +71,15 @@
                     "buildings"
                 ],
                 "summary": "Retrieve building by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -136,6 +145,15 @@
                     "buildings"
                 ],
                 "summary": "Update building information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -223,6 +241,41 @@
                 }
             }
         },
+        "/floor/{id}": {
+            "get": {
+                "description": "Retrieve floor based on Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Retrieve floor based on Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Floor Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.BuildingFloor"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/floors": {
             "get": {
                 "description": "Retrieve list of all floor records",
@@ -233,6 +286,41 @@
                     "floors"
                 ],
                 "summary": "Retrieve list of all floor records",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.FloorList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/floors/buildingId/{id}": {
+            "get": {
+                "description": "Retrieve list of all floors based on building Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Retrieve list of all floors based on building Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -957,7 +1045,7 @@
                     "type": "string"
                 },
                 "creatorId": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

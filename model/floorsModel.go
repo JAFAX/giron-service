@@ -19,6 +19,7 @@ package model
 */
 
 import (
+	"database/sql"
 	"log"
 )
 
@@ -83,4 +84,62 @@ func GetAllFloors() ([]BuildingFloor, error) {
 
 	log.Println("INFO: List of all floors retrieved")
 	return floors, nil
+}
+
+func GetFloorsByBuildingId(id int) ([]BuildingFloor, error) {
+	log.Println("INFO: List of floors in a building requested")
+	rows, err := DB.Query("SELECT * FROM BuildingFloors WHERE BuildingId = ?", id)
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return nil, err
+	}
+
+	floors := make([]BuildingFloor, 0)
+	for rows.Next() {
+		floor := BuildingFloor{}
+		err = rows.Scan(
+			&floor.Id,
+			&floor.FloorName,
+			&floor.BuildingId,
+			&floor.CreatorId,
+			&floor.CreationDate,
+		)
+		if err != nil {
+			log.Println("ERROR: Cannot marshal the floor objects!" + string(err.Error()))
+			return nil, err
+		}
+		floors = append(floors, floor)
+	}
+
+	log.Println("INFO: List of all floors retrieved")
+	return floors, nil
+}
+
+func GetFloorById(id int) (BuildingFloor, error) {
+	log.Println("INFO: List of floors in a building requested")
+	ent, err := DB.Prepare("SELECT * FROM BuildingFloors WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return BuildingFloor{}, err
+	}
+
+	floor := BuildingFloor{}
+	err = ent.QueryRow(id).Scan(
+		&floor.Id,
+		&floor.FloorName,
+		&floor.BuildingId,
+		&floor.CreatorId,
+		&floor.CreationDate,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such floor found in DB: " + string(err.Error()))
+			return BuildingFloor{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve floor from DB: " + string(err.Error()))
+		return BuildingFloor{}, err
+	}
+
+	log.Println("INFO: List of all floors retrieved")
+	return floor, nil
 }

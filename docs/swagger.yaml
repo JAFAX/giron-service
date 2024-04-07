@@ -117,7 +117,7 @@ definitions:
       city:
         type: string
       creatorId:
-        type: string
+        type: integer
       name:
         type: string
       region:
@@ -194,7 +194,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.16
+  version: 0.0.18
 paths:
   /building:
     post:
@@ -253,6 +253,12 @@ paths:
       - buildings
     get:
       description: Retrieve building by Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -269,6 +275,12 @@ paths:
       - buildings
     patch:
       description: Update building information
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -328,6 +340,29 @@ paths:
       summary: Create a new floor
       tags:
       - floors
+  /floor/{id}:
+    get:
+      description: Retrieve floor based on Id
+      parameters:
+      - description: Floor Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.BuildingFloor'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve floor based on Id
+      tags:
+      - floors
   /floors:
     get:
       description: Retrieve list of all floor records
@@ -343,6 +378,29 @@ paths:
           schema:
             $ref: '#/definitions/model.FailureMsg'
       summary: Retrieve list of all floor records
+      tags:
+      - floors
+  /floors/buildingId/{id}:
+    get:
+      description: Retrieve list of all floors based on building Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.FloorList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all floors based on building Id
       tags:
       - floors
   /panel:

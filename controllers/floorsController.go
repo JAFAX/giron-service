@@ -96,16 +96,32 @@ func (g *GironService) GetAllFloors(c *gin.Context) {
 		return
 	}
 
-	floorSlice := make([]model.BuildingFloor, 0)
-	for _, floor := range floorSlice {
-		floorEnt := model.BuildingFloor{}
-		floorEnt.Id = floor.Id
-		floorEnt.FloorName = floor.FloorName
-		floorEnt.BuildingId = floor.BuildingId
-		floorEnt.CreatorId = floor.CreatorId
-		floorEnt.CreationDate = floor.CreationDate
+	if floors == nil {
+		log.Println("WARN: No floors returned")
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		log.Println("INFO: Returned floor list")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
+	}
+}
 
-		floorSlice = append(floorSlice, floorEnt)
+// GetFloorsByBuildingId Retrieve list of all floors based on building Id
+//
+//	@Summary		Retrieve list of all floors based on building Id
+//	@Description	Retrieve list of all floors based on building Id
+//	@Tags			floors
+//	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
+//	@Success		200	{object}	model.FloorList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/floors/buildingId/{id} [get]
+func (g *GironService) GetFloorsByBuildingId(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	floors, err := model.GetFloorsByBuildingId(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
 	}
 
 	if floors == nil {
@@ -113,6 +129,29 @@ func (g *GironService) GetAllFloors(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
 	} else {
 		log.Println("INFO: Returned floor list")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": floorSlice})
+		c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
 	}
+}
+
+// GetFloorById Retrieve a floor based on Id
+//
+//	@Summary		Retrieve floor based on Id
+//	@Description	Retrieve floor based on Id
+//	@Tags			floors
+//	@Produce		json
+//	@Param			id	path	string	true	"Floor Id"
+//	@Success		200	{object}	model.BuildingFloor
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/floor/{id} [get]
+func (g *GironService) GetFloorById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	floor, err := model.GetFloorById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	log.Println("INFO: Returned floor list")
+	c.IndentedJSON(http.StatusOK, gin.H{"data": floor})
 }
