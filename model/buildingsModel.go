@@ -85,7 +85,7 @@ func GetBuildingById(id int) (Building, error) {
 
 func GetBuildingIdByName(buildingName string) (int, error) {
 	log.Println("INFO: Getting building id by name")
-	ent, err := DB.Prepare("SELECT Id From Buildings WHERE Name = ?")
+	ent, err := DB.Prepare("SELECT Id FROM Buildings WHERE Name = ?")
 	if err != nil {
 		log.Println("ERROR: Cannot prepare SQL query: " + string(err.Error()))
 		return -1, err
@@ -93,7 +93,7 @@ func GetBuildingIdByName(buildingName string) (int, error) {
 
 	var id int
 	err = ent.QueryRow(buildingName).Scan(
-		id,
+		&id,
 	)
 	if err != nil {
 		if err != sql.ErrNoRows {
