@@ -111,6 +111,7 @@ func (g *GironService) GetBuildings(c *gin.Context) {
 //	@Description	Retrieve building by Id
 //	@Tags			buildings
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
 //	@Success		200	{object}	model.Building
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [get]
@@ -138,6 +139,7 @@ func (g *GironService) GetBuildingById(c *gin.Context) {
 //	@Description	Update building information
 //	@Tags			buildings
 //	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [patch]
