@@ -175,3 +175,32 @@ func (g *GironService) UpdateBuildingById(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
 }
+
+// DeleteBuildingById Delete a building by its Id
+//
+//	@Summary		Delete a building by Id
+//	@Description	Delete a building by Id
+//	@Tags			buildings
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/building/{id} [delete]
+func (g *GironService) DeleteBuildingById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	status, err := model.DeleteBuildingById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete building: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building! " + string(err.Error())})
+		return
+	}
+
+	if status {
+		idString := strconv.Itoa(id)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Building Id '" + idString + " has been removed from system"})
+	} else {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building!"})
+	}
+}

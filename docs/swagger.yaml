@@ -103,6 +103,13 @@ definitions:
       region:
         type: string
     type: object
+  model.ProposedFloor:
+    properties:
+      buildingName:
+        type: string
+      name:
+        type: string
+    type: object
   model.ProposedUser:
     properties:
       Id:
@@ -167,7 +174,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.15
+  version: 0.0.16
 paths:
   /building:
     post:
@@ -198,6 +205,32 @@ paths:
       tags:
       - buildings
   /building/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a building by Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Delete a building by Id
+      tags:
+      - buildings
     get:
       description: Retrieve building by Id
       produces:
@@ -247,6 +280,34 @@ paths:
       summary: Retrieve list of all panels
       tags:
       - buildings
+  /floor:
+    post:
+      consumes:
+      - application/json
+      description: Create a new floor
+      parameters:
+      - description: Floor data
+        in: body
+        name: floor
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProposedFloor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Create a new floor
+      tags:
+      - floors
   /panel:
     post:
       consumes:

@@ -1,7 +1,5 @@
 package model
 
-import "database/sql"
-
 /*
 
   Copyright 2024, JAFAX, Inc.
@@ -19,6 +17,10 @@ import "database/sql"
   limitations under the License.
 
 */
+
+import (
+	"database/sql"
+)
 
 type Building struct {
 	Id           int    `json:"Id"`
@@ -50,6 +52,11 @@ type Location struct {
 	BuildingId   int    `json:"buildingId"`
 	CreatorId    int    `json:"creatorId"`
 	CreationDate string `json:"creationDateTime"`
+}
+
+type ProposedFloor struct {
+	Name         string `json:"name"`
+	BuildingName string `json:"buildingName"`
 }
 
 type ProposedPanel struct {
@@ -132,13 +139,13 @@ type ProposedBuilding struct {
 type ProposedUser struct {
 	Id           int    `json:"Id"`
 	UserName     string `json:"userName"`
-	Status       string `json:"status"`
+	Status       string `json:"status" enum:"enabled,disabled"`
 	Password     string `json:"password"`
 	CreationDate string `json:"creationDate"`
 }
 
 type UserStatus struct {
-	Status string `json:"status"`
+	Status string `json:"status" enum:"enabled,disabled"`
 }
 
 type FailureMsg struct {
@@ -151,7 +158,7 @@ type SuccessMsg struct {
 
 type UserStatusMsg struct {
 	Message    string `json:"message"`
-	UserStatus string `json:"userStatus"`
+	UserStatus string `json:"userStatus" enum:"enabled,disabled"`
 }
 
 type PasswordChange struct {

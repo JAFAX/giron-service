@@ -62,14 +62,17 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	// building related routes
-	g.POST("/building", i.CreateBuilding)          // create a new building
-	g.PATCH("/building/:id", i.UpdateBuildingById) // update a building
+	g.POST("/building", i.CreateBuilding)           // create a new building
+	g.PATCH("/building/:id", i.UpdateBuildingById)  // update a building
+	g.DELETE("/building/:id", i.DeleteBuildingById) // delete a building
 	// floor related routes
-	g.POST("/floor")
+	g.POST("/floor", i.CreateFloor) // create a new floor in a building
 	g.PATCH("/floor/:id")
+	g.DELETE("/floor/:id")
 	// location related routes
 	g.POST("/location")
 	g.PATCH("/location/:id")
+	g.DELETE("/location/:id")
 	// panel related routes
 	g.GET("/panels/all", i.GetPanels)                 // get all panels
 	g.POST("/panel", i.CreatePanel)                   // create a new panel event

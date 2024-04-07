@@ -83,6 +83,30 @@ func GetBuildingById(id int) (Building, error) {
 	return building, nil
 }
 
+func GetBuildingIdByName(buildingName string) (int, error) {
+	log.Println("INFO: Getting building id by name")
+	ent, err := DB.Prepare("SELECT Id From Buildings WHERE Name = ?")
+	if err != nil {
+		log.Println("ERROR: Cannot prepare SQL query: " + string(err.Error()))
+		return -1, err
+	}
+
+	var id int
+	err = ent.QueryRow(buildingName).Scan(
+		id,
+	)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			log.Println("ERROR: No such building found in DB: " + string(err.Error()))
+			return -1, sql.ErrNoRows
+		}
+		log.Println("ERROR: Cannot retrieve building from DB: " + string(err.Error()))
+		return -1, err
+	}
+
+	return id, nil
+}
+
 func GetBuildings() ([]Building, error) {
 	log.Println("INFO: List of panel objects requested")
 	rows, err := DB.Query("SELECT * FROM Buildings")
@@ -143,5 +167,31 @@ func UpdateBuildingById(id int, b BuildingUpdate) (bool, error) {
 	t.Commit()
 
 	log.Println("INFO: Building entry updated")
+	return true, nil
+}
+
+func DeleteBuildingById(id int) (bool, error) {
+	log.Println("INFO: User deletion requested for Id: " + strconv.Itoa(id))
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
+		return false, err
+	}
+
+	q, err := DB.Prepare("DELETE FROM Buildings WHERE Id IS ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare the DB query!" + string(err.Error()))
+		return false, err
+	}
+
+	_, err = q.Exec(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete building with Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: Building with Id '" + strconv.Itoa(id) + "' has been deleted")
 	return true, nil
 }

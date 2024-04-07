@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.15"
+        "version": "0.0.16"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -86,6 +86,47 @@
                     }
                 }
             },
+            "delete": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Delete a building by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "buildings"
+                ],
+                "summary": "Delete a building by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Building Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update building information",
                 "produces": [
@@ -126,6 +167,51 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.BuildingList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/floor": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Create a new floor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Create a new floor",
+                "parameters": [
+                    {
+                        "description": "Floor data",
+                        "name": "floor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ProposedFloor"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
                         }
                     },
                     "400": {
@@ -820,6 +906,17 @@
                     "type": "string"
                 },
                 "region": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ProposedFloor": {
+            "type": "object",
+            "properties": {
+                "buildingName": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
