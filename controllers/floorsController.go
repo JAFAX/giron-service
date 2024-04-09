@@ -79,6 +79,35 @@ func (g *GironService) CreateFloor(c *gin.Context) {
 	}
 }
 
+// DeleteFloorById Delete a floor by its Id
+//
+//	@Summary		Delete a floor by Id
+//	@Description	Delete a floor by Id
+//	@Tags			floors
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Floor Id"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/floor/{id} [delete]
+func (g *GironService) DeleteFloorById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	status, err := model.DeleteFloorById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete floor: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove floor! " + string(err.Error())})
+		return
+	}
+
+	if status {
+		idString := strconv.Itoa(id)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Floor Id '" + idString + "' has been removed from system"})
+	} else {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove floor!"})
+	}
+}
+
 // GetAllFloors Retrieve list of all floor records
 //
 //	@Summary		Retrieve list of all floor records
@@ -153,5 +182,39 @@ func (g *GironService) GetFloorById(c *gin.Context) {
 	}
 
 	log.Println("INFO: Returned floor list")
-	c.IndentedJSON(http.StatusOK, gin.H{"data": floor})
+	c.IndentedJSON(http.StatusOK, floor)
+}
+
+// UpdateFloorById Update floor by Id
+//
+//	@Summary		Update floor information
+//	@Description	Update floor information
+//	@Tags			floors
+//	@Produce		json
+//	@Param			id	path	string	true	"Floor Id"
+//	@Param			floor	body	model.FloorUpdate	true	"Floor data"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/floor/{id} [patch]
+func (g *GironService) UpdateFloorById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+	var json model.FloorUpdate
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// we don't need the status, since the error speaks for itself
+	_, err = model.UpdateFloorById(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Floor updated"})
 }

@@ -44,6 +44,15 @@ definitions:
           $ref: '#/definitions/model.Building'
         type: array
     type: object
+  model.BuildingUpdate:
+    properties:
+      city:
+        type: string
+      name:
+        type: string
+      region:
+        type: string
+    type: object
   model.FailureMsg:
     properties:
       error:
@@ -55,6 +64,13 @@ definitions:
         items:
           $ref: '#/definitions/model.BuildingFloor'
         type: array
+    type: object
+  model.FloorUpdate:
+    properties:
+      buildingId:
+        type: integer
+      name:
+        type: string
     type: object
   model.Location:
     properties:
@@ -281,6 +297,12 @@ paths:
         name: id
         required: true
         type: string
+      - description: Building data
+        in: body
+        name: building
+        required: true
+        schema:
+          $ref: '#/definitions/model.BuildingUpdate'
       produces:
       - application/json
       responses:
@@ -343,6 +365,32 @@ paths:
       tags:
       - floors
   /floor/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a floor by Id
+      parameters:
+      - description: Floor Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Delete a floor by Id
+      tags:
+      - floors
     get:
       description: Retrieve floor based on Id
       parameters:
@@ -363,6 +411,36 @@ paths:
           schema:
             $ref: '#/definitions/model.FailureMsg'
       summary: Retrieve floor based on Id
+      tags:
+      - floors
+    patch:
+      description: Update floor information
+      parameters:
+      - description: Floor Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Floor data
+        in: body
+        name: floor
+        required: true
+        schema:
+          $ref: '#/definitions/model.FloorUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Update floor information
       tags:
       - floors
   /floors:

@@ -69,9 +69,9 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.PATCH("/building/:id", i.UpdateBuildingById)  // update a building
 	g.DELETE("/building/:id", i.DeleteBuildingById) // delete a building
 	// floor related routes
-	g.POST("/floor", i.CreateFloor) // create a new floor in a building
-	g.PATCH("/floor/:id")
-	g.DELETE("/floor/:id")
+	g.POST("/floor", i.CreateFloor)           // create a new floor in a building
+	g.PATCH("/floor/:id", i.UpdateFloorById)  // update a floor by its Id
+	g.DELETE("/floor/:id", i.DeleteFloorById) // delete a floor by its Id
 	// location related routes
 	g.POST("/location")
 	g.PATCH("/location/:id")

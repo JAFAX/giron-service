@@ -21,6 +21,7 @@ package model
 import (
 	"database/sql"
 	"log"
+	"strconv"
 )
 
 func CreateFloor(f ProposedFloor, id int) (bool, error) {
@@ -54,6 +55,32 @@ func CreateFloor(f ProposedFloor, id int) (bool, error) {
 
 	log.Println("INFO: Floor entry created")
 
+	return true, nil
+}
+
+func DeleteFloorById(id int) (bool, error) {
+	log.Println("INFO: Floor deletion requested: " + strconv.Itoa(id))
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
+		return false, err
+	}
+
+	q, err := DB.Prepare("DELETE FROM BuildingFloors WHERE Id IS ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare the DB query!" + string(err.Error()))
+		return false, err
+	}
+
+	_, err = q.Exec(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete floor with id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: Floor with id '" + strconv.Itoa(id) + "' has been deleted")
 	return true, nil
 }
 
@@ -142,4 +169,36 @@ func GetFloorById(id int) (BuildingFloor, error) {
 
 	log.Println("INFO: List of all floors retrieved")
 	return floor, nil
+}
+
+func UpdateFloorById(id int, f FloorUpdate) (bool, error) {
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, err
+	}
+
+	q, err := t.Prepare("UPDATE BuildingFloors SET FloorName = ?, BuildingId = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, err
+	}
+	log.Println("INFO: Floor ID to update: " + strconv.Itoa(id))
+	log.Println("INFO: Incoming data: Floor name: " + f.FloorName + ", Building Id: " + strconv.Itoa(f.BuildingId))
+
+	//	floor, err := json.Marshal(f)
+	//	if err != nil {
+	//		log.Println("ERROR: Cannot marshal JSON: " + string(err.Error()))
+	//		return false, err
+	//	}
+	_, err = q.Exec(f.FloorName, f.BuildingId, id)
+	if err != nil {
+		log.Println("ERROR: Cannot execute DB query: " + string(err.Error()))
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: Floor entry updated")
+	return true, nil
 }

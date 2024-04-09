@@ -163,6 +163,15 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Building data",
+                        "name": "building",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.BuildingUpdate"
+                        }
                     }
                 ],
                 "responses": {
@@ -276,6 +285,94 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.BuildingFloor"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Delete a floor by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Delete a floor by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Floor Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Update floor information",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "floors"
+                ],
+                "summary": "Update floor information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Floor Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Floor data",
+                        "name": "floor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.FloorUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
                         }
                     },
                     "400": {
@@ -990,6 +1087,20 @@ const docTemplate = `{
                 }
             }
         },
+        "model.BuildingUpdate": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                }
+            }
+        },
         "model.FailureMsg": {
             "type": "object",
             "properties": {
@@ -1006,6 +1117,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.BuildingFloor"
                     }
+                }
+            }
+        },
+        "model.FloorUpdate": {
+            "type": "object",
+            "properties": {
+                "buildingId": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
