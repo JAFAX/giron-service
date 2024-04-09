@@ -445,6 +445,51 @@ const docTemplate = `{
                 }
             }
         },
+        "/location": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Create a new location",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "locations"
+                ],
+                "summary": "Create a new location",
+                "parameters": [
+                    {
+                        "description": "Location data",
+                        "name": "location",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ProposedLocation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panel": {
             "post": {
                 "security": [
@@ -1245,6 +1290,23 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ProposedLocation": {
+            "type": "object",
+            "properties": {
+                "buildingId": {
+                    "type": "integer"
+                },
+                "creatorId": {
+                    "type": "integer"
+                },
+                "floorId": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.ProposedUser": {
             "type": "object",
             "properties": {
@@ -1339,7 +1401,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.0.19",
+	Version:          "0.0.20",
 	Host:             "localhost:5000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},

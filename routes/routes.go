@@ -45,10 +45,10 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/floors/buildingId/:id", i.GetFloorsByBuildingId) // get all floors in a building
 	g.GET("/floor/:id", i.GetFloorById)                      // get floor by Id
 	// location related routes
-	g.GET("/locations")
-	g.GET("/locations/byFloorId/:id")
-	g.GET("/locations/byBuildingId/:id")
-	g.GET("/location/:id")
+	g.GET("/locations")                  // get all locations at the event
+	g.GET("/locations/byFloorId/:id")    // get locations by the floor id
+	g.GET("/locations/byBuildingId/:id") // get locations by building id
+	g.GET("/location/:id")               // get location by id
 	// panel related routes
 	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
 	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
@@ -73,9 +73,9 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.PATCH("/floor/:id", i.UpdateFloorById)  // update a floor by its Id
 	g.DELETE("/floor/:id", i.DeleteFloorById) // delete a floor by its Id
 	// location related routes
-	g.POST("/location")
-	g.PATCH("/location/:id")
-	g.DELETE("/location/:id")
+	g.POST("/location", i.CreateLocation) // create locations in the building
+	g.PATCH("/location/:id")              // update locations in the building by id
+	g.DELETE("/location/:id")             // delete a location by id
 	// panel related routes
 	g.GET("/panels/all", i.GetPanels)                 // get all panels
 	g.POST("/panel", i.CreatePanel)                   // create a new panel event

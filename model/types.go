@@ -64,6 +64,13 @@ type ProposedFloor struct {
 	BuildingName string `json:"buildingName"`
 }
 
+type ProposedLocation struct {
+	RoomName   string `json:"name"`
+	FloorId    int    `json:"floorId"`
+	BuildingId int    `json:"buildingId"`
+	CreatorId  int    `json:"creatorId"`
+}
+
 type ProposedPanel struct {
 	Topic               string `json:"topic"`
 	Description         string `json:"description"`

@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         },
-        "version": "0.0.19"
+        "version": "0.0.20"
     },
     "host": "localhost:5000",
     "basePath": "/api/v1",
@@ -428,6 +428,51 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.FloorList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/location": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Create a new location",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "locations"
+                ],
+                "summary": "Create a new location",
+                "parameters": [
+                    {
+                        "description": "Location data",
+                        "name": "location",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.ProposedLocation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
                         }
                     },
                     "400": {
@@ -1233,6 +1278,23 @@
             "properties": {
                 "buildingName": {
                     "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ProposedLocation": {
+            "type": "object",
+            "properties": {
+                "buildingId": {
+                    "type": "integer"
+                },
+                "creatorId": {
+                    "type": "integer"
+                },
+                "floorId": {
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string"

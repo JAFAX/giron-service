@@ -146,6 +146,17 @@ definitions:
       name:
         type: string
     type: object
+  model.ProposedLocation:
+    properties:
+      buildingId:
+        type: integer
+      creatorId:
+        type: integer
+      floorId:
+        type: integer
+      name:
+        type: string
+    type: object
   model.ProposedUser:
     properties:
       Id:
@@ -210,7 +221,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.19
+  version: 0.0.20
 paths:
   /building:
     post:
@@ -483,6 +494,34 @@ paths:
       summary: Retrieve list of all floors based on building Id
       tags:
       - floors
+  /location:
+    post:
+      consumes:
+      - application/json
+      description: Create a new location
+      parameters:
+      - description: Location data
+        in: body
+        name: location
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProposedLocation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Create a new location
+      tags:
+      - locations
   /panel:
     post:
       consumes:
