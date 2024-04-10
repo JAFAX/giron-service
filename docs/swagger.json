@@ -1262,9 +1262,6 @@
                 "city": {
                     "type": "string"
                 },
-                "creatorId": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -1290,9 +1287,6 @@
                 "buildingId": {
                     "type": "integer"
                 },
-                "creatorId": {
-                    "type": "integer"
-                },
                 "floorId": {
                     "type": "integer"
                 },
@@ -1306,9 +1300,6 @@
             "properties": {
                 "Id": {
                     "type": "integer"
-                },
-                "creationDate": {
-                    "type": "string"
                 },
                 "password": {
                     "type": "string"

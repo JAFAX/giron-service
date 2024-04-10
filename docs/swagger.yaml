@@ -132,8 +132,6 @@ definitions:
     properties:
       city:
         type: string
-      creatorId:
-        type: integer
       name:
         type: string
       region:
@@ -150,8 +148,6 @@ definitions:
     properties:
       buildingId:
         type: integer
-      creatorId:
-        type: integer
       floorId:
         type: integer
       name:
@@ -161,8 +157,6 @@ definitions:
     properties:
       Id:
         type: integer
-      creationDate:
-        type: string
       password:
         type: string
       status:

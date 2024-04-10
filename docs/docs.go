@@ -1268,9 +1268,6 @@ const docTemplate = `{
                 "city": {
                     "type": "string"
                 },
-                "creatorId": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -1296,9 +1293,6 @@ const docTemplate = `{
                 "buildingId": {
                     "type": "integer"
                 },
-                "creatorId": {
-                    "type": "integer"
-                },
                 "floorId": {
                     "type": "integer"
                 },
@@ -1312,9 +1306,6 @@ const docTemplate = `{
             "properties": {
                 "Id": {
                     "type": "integer"
-                },
-                "creationDate": {
-                    "type": "string"
                 },
                 "password": {
                     "type": "string"
