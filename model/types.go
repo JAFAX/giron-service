@@ -22,6 +22,8 @@ import (
 	"database/sql"
 )
 
+// primary object structs
+
 type Building struct {
 	Id           int    `json:"Id"`
 	Name         string `json:"name"`
@@ -59,38 +61,19 @@ type Location struct {
 	CreationDate string `json:"creationDateTime"`
 }
 
-type ProposedFloor struct {
-	Name         string `json:"name"`
-	BuildingName string `json:"buildingName"`
-}
-
-type ProposedLocation struct {
-	RoomName   string `json:"name"`
-	FloorId    int    `json:"floorId"`
-	BuildingId int    `json:"buildingId"`
-	CreatorId  int    `json:"creatorId"`
-}
-
-type ProposedPanel struct {
+type Panel struct {
+	Id                  int    `json:"Id"`
 	Topic               string `json:"topic"`
 	Description         string `json:"description"`
 	PanelRequestorEmail string `json:"panelRequestorEmail"`
-}
-
-type BuildingList struct {
-	Data []Building `json:"data"`
-}
-
-type FloorList struct {
-	Data []BuildingFloor `json:"data"`
-}
-
-type PanelList struct {
-	Data []Panel `json:"data"`
-}
-
-type UsersList struct {
-	Data []User `json:"data"`
+	Location            string `json:"location"`
+	ScheduledTime       string `json:"scheduledTime"`
+	DurationInMinutes   int    `json:"durationInMinutes"`
+	CreatorId           int    `json:"creatorId"`
+	CreationDateTime    string `json:"creationDateTime"`
+	ApprovalStatus      bool   `json:"approvalStatus"`
+	ApprovedById        int    `json:"approvedById"`
+	ApprovalDateTime    string `json:"approvalDateTime"`
 }
 
 type PanelSQL struct {
@@ -108,19 +91,9 @@ type PanelSQL struct {
 	ApprovalDateTime    sql.NullString `json:"approvalDateTime"`
 }
 
-type Panel struct {
-	Id                  int    `json:"Id"`
-	Topic               string `json:"topic"`
-	Description         string `json:"description"`
-	PanelRequestorEmail string `json:"panelRequestorEmail"`
-	Location            string `json:"location"`
-	ScheduledTime       string `json:"scheduledTime"`
-	DurationInMinutes   int    `json:"durationInMinutes"`
-	CreatorId           int    `json:"creatorId"`
-	CreationDateTime    string `json:"creationDateTime"`
-	ApprovalStatus      bool   `json:"approvalStatus"`
-	ApprovedById        int    `json:"approvedById"`
-	ApprovalDateTime    string `json:"approvalDateTime"`
+type PasswordChange struct {
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 type ScheduledEvent struct {
@@ -145,31 +118,8 @@ type User struct {
 	LastChangedDate string `json:"lastChangedDate"`
 }
 
-type ProposedBuilding struct {
-	Name      string `json:"name"`
-	City      string `json:"city"`
-	Region    string `json:"region"`
-	CreatorId int    `json:"creatorId"`
-}
-
-type ProposedUser struct {
-	Id           int    `json:"Id"`
-	UserName     string `json:"userName"`
-	Status       string `json:"status" enum:"enabled,disabled"`
-	Password     string `json:"password"`
-	CreationDate string `json:"creationDate"`
-}
-
 type UserStatus struct {
 	Status string `json:"status" enum:"enabled,disabled"`
-}
-
-type FailureMsg struct {
-	Error string `json:"error"`
-}
-
-type SuccessMsg struct {
-	Message string `json:"message"`
 }
 
 type UserStatusMsg struct {
@@ -177,7 +127,66 @@ type UserStatusMsg struct {
 	UserStatus string `json:"userStatus" enum:"enabled,disabled"`
 }
 
-type PasswordChange struct {
-	OldPassword string `json:"oldPassword"`
-	NewPassword string `json:"newPassword"`
+// proposed object structs. Normally used when creating new DB entries
+
+type ProposedBuilding struct {
+	Name   string `json:"name"`
+	City   string `json:"city"`
+	Region string `json:"region"`
+}
+
+type ProposedFloor struct {
+	Name         string `json:"name"`
+	BuildingName string `json:"buildingName"`
+}
+
+type ProposedLocation struct {
+	RoomName   string `json:"name"`
+	FloorId    int    `json:"floorId"`
+	BuildingId int    `json:"buildingId"`
+}
+
+type ProposedPanel struct {
+	Topic               string `json:"topic"`
+	Description         string `json:"description"`
+	PanelRequestorEmail string `json:"panelRequestorEmail"`
+}
+
+type ProposedUser struct {
+	Id       int    `json:"Id"`
+	UserName string `json:"userName"`
+	Status   string `json:"status" enum:"enabled,disabled"`
+	Password string `json:"password"`
+}
+
+// list object structs
+
+type BuildingList struct {
+	Data []Building `json:"data"`
+}
+
+type FloorList struct {
+	Data []BuildingFloor `json:"data"`
+}
+
+type LocationList struct {
+	Data []Location `json:"data"`
+}
+
+type PanelList struct {
+	Data []Panel `json:"data"`
+}
+
+type UsersList struct {
+	Data []User `json:"data"`
+}
+
+// generic message structs
+
+type FailureMsg struct {
+	Error string `json:"error"`
+}
+
+type SuccessMsg struct {
+	Message string `json:"message"`
 }
