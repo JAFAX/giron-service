@@ -18,7 +18,11 @@ package model
 
 */
 
-import "log"
+import (
+	"database/sql"
+	"log"
+	"strconv"
+)
 
 func CreateLocation(p ProposedLocation, id int) (bool, error) {
 	log.Println("INFO: Creating a room: " + p.RoomName)
@@ -77,5 +81,95 @@ func GetAllLocations() ([]Location, error) {
 	}
 
 	log.Println("INFO: List of all locations retrieved")
+	return locations, nil
+}
+
+func GetLocationById(id int) (Location, error) {
+	log.Println("INFO: Location by Id requested")
+	ent, err := DB.Prepare("SELECT * FROM Locations WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return Location{}, err
+	}
+
+	location := Location{}
+	err = ent.QueryRow(id).Scan(
+		&location.Id,
+		&location.Location,
+		&location.FloorId,
+		&location.BuildingId,
+		&location.CreatorId,
+		&location.CreationDate,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such location found in DB: " + string(err.Error()))
+			return Location{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve location from DB: " + string(err.Error()))
+		return Location{}, err
+	}
+
+	log.Println("INFO: Location by Id '" + strconv.Itoa(id) + "' retrieved")
+	return location, nil
+}
+
+func GetLocationsByFloorId(id int) ([]Location, error) {
+	log.Println("INFO: List of locations on a floor requested")
+	rows, err := DB.Query("SELECT * FROM Locations WHERE FloorId = ?", id)
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return nil, err
+	}
+
+	locations := make([]Location, 0)
+	for rows.Next() {
+		location := Location{}
+		err = rows.Scan(
+			&location.Id,
+			&location.Location,
+			&location.FloorId,
+			&location.BuildingId,
+			&location.CreatorId,
+			&location.CreationDate,
+		)
+		if err != nil {
+			log.Println("ERROR: Cannot marshal the location objects!" + string(err.Error()))
+			return nil, err
+		}
+		locations = append(locations, location)
+	}
+
+	log.Println("INFO: List of locations by floor Id retrieved")
+	return locations, nil
+}
+
+func GetLocationsByBuildingId(id int) ([]Location, error) {
+	log.Println("INFO: List of locations at a building requested")
+	rows, err := DB.Query("SELECT * FROM Locations WHERE BuildingId = ?", id)
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return nil, err
+	}
+
+	locations := make([]Location, 0)
+	for rows.Next() {
+		location := Location{}
+		err = rows.Scan(
+			&location.Id,
+			&location.Location,
+			&location.FloorId,
+			&location.BuildingId,
+			&location.CreatorId,
+			&location.CreationDate,
+		)
+		if err != nil {
+			log.Println("ERROR: Cannot marshal the location objects!" + string(err.Error()))
+			return nil, err
+		}
+		locations = append(locations, location)
+	}
+
+	log.Println("INFO: List of locations by building Id retrieved")
 	return locations, nil
 }

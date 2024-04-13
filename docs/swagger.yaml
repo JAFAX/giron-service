@@ -523,6 +523,75 @@ paths:
       summary: Create a new location
       tags:
       - locations
+  /location/{id}:
+    get:
+      description: Retrieve location by Id
+      parameters:
+      - description: Location Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Location'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve location by Id
+      tags:
+      - locations
+  /location/byBuildingId/{id}:
+    get:
+      description: Retrieve list of locations by building Id
+      parameters:
+      - description: Building Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LocationList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of locations by building Id
+      tags:
+      - locations
+  /location/byFloorId/{id}:
+    get:
+      description: Retrieve list of locations by floor Id
+      parameters:
+      - description: Floor Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LocationList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of locations by floor Id
+      tags:
+      - locations
   /locations:
     get:
       description: Retrieve list of all location objects

@@ -104,3 +104,77 @@ func (g *GironService) GetAllLocations(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, gin.H{"data": locations})
 	}
 }
+
+// GetLocationById Retrieve location by Id
+//
+//	@Summary		Retrieve location by Id
+//	@Description	Retrieve location by Id
+//	@Tags			locations
+//	@Produce		json
+//	@Param			id	path	string	true	"Location Id"
+//	@Success		200	{object}	model.Location
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/location/{id} [get]
+func (g *GironService) GetLocationById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ent, err := model.GetLocationById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve location by Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	if ent.Location == "" {
+		log.Println("WARN: No Location returned")
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		log.Println("INFO: Returned location object for Id '" + strconv.Itoa(id) + "'")
+		c.IndentedJSON(http.StatusOK, ent)
+	}
+}
+
+// GetLocationsByFloorId Retrieve list of locations by floor Id
+//
+//	@Summary		Retrieve list of locations by floor Id
+//	@Description	Retrieve list of locations by floor Id
+//	@Tags			locations
+//	@Produce		json
+//	@Param			id	path	string	true	"Floor Id"
+//	@Success		200	{object}	model.LocationList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/location/byFloorId/{id} [get]
+func (g *GironService) GetLocationsByFloorId(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ent, err := model.GetLocationsByFloorId(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve locations by floor Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	log.Println("INFO: Returned location object for floor Id '" + strconv.Itoa(id) + "'")
+	c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+}
+
+// GetLocationsByBuildingId Retrieve list of locations by building Id
+//
+//	@Summary		Retrieve list of locations by building Id
+//	@Description	Retrieve list of locations by building Id
+//	@Tags			locations
+//	@Produce		json
+//	@Param			id	path	string	true	"Building Id"
+//	@Success		200	{object}	model.LocationList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/location/byBuildingId/{id} [get]
+func (g *GironService) GetLocationsByBuildingId(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	ent, err := model.GetLocationsByBuildingId(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve locations by building Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	log.Println("INFO: Returned location object for building Id '" + strconv.Itoa(id) + "'")
+	c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+}

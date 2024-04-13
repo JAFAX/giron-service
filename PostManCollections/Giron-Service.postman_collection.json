@@ -1,0 +1,760 @@
+{
+	"info": {
+		"_postman_id": "5087da7f-55f0-4b70-b49b-8b198cd702cb",
+		"name": "Giron-Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4318470"
+	},
+	"item": [
+		{
+			"name": "Get Buildings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/buildings",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"buildings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Building by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/building/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"building",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Floors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/floors",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"floors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Floor by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/floor/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"floor",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Floors by Building Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/floors/buildingId/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"floors",
+						"buildingId",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Locations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/locations",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Location by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/location/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"location",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Location by Floor Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/locations/byFloorId/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"locations",
+						"byFloorId",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Location by Building Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/locations/byBuildingId/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"locations",
+						"byBuildingId",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Panels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panels/all",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panels",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Approved Panels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panels",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Panel By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Panel Location By Panel Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel/{{Id}}/location",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel",
+						"{{Id}}",
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Panel Schedule By Panel Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel/{{Id}}/schedule",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel",
+						"{{Id}}",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/users",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/id/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"id",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User by Name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/name/{{username}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"name",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/{{username}}/status",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"{{username}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Building",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Amway Grand Plaza Hotel\",\n    \"city\": \"Grand Rapids\",\n    \"region\": \"Michigan\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/building",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"building"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Floor",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Street Level\",\n    \"buildingName\": \"DeVos Place\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/floor",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"floor"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Location",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Exhibition Hall B\",\n    \"floorId\": 1,\n    \"buildingId\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/location",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Panel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\": \"Test\",\n    \"description\": \"This is a test.\",\n    \"PanelRequestorEmail\": \"user@example.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assign Panel Location",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"topic\": \"Test\",\n    \"location\": \"Room A\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel/{{Id}}/location",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel",
+						"{{Id}}",
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"UserName\": \"{{username}}\",\n    \"Password\": \"{{userPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Building",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/{{username}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Floor",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/floor/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"floor",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/{{username}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set User Status",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"status\": \"enabled\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/{{username}}/status",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"{{username}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change User Password",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"oldPassword\": \"{{newUserPassword}}\",\n    \"newPassword\": \"{{userPassword}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/user/{{username}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"user",
+						"{{username}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "serviceHost",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userPassword",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newUserPassword",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
