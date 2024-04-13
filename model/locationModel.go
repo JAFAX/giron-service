@@ -45,7 +45,37 @@ func CreateLocation(p ProposedLocation, id int) (bool, error) {
 
 	t.Commit()
 
-	log.Println("INFO: Panel entry created")
+	log.Println("INFO: Location entry created")
 
 	return true, nil
+}
+
+func GetAllLocations() ([]Location, error) {
+	log.Println("INFO: List of location objects requested")
+	rows, err := DB.Query("SELECT * FROM Locations")
+	if err != nil {
+		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
+		return nil, err
+	}
+
+	locations := make([]Location, 0)
+	for rows.Next() {
+		location := Location{}
+		err = rows.Scan(
+			&location.Id,
+			&location.Location,
+			&location.FloorId,
+			&location.BuildingId,
+			&location.CreatorId,
+			&location.CreationDate,
+		)
+		if err != nil {
+			log.Println("ERROR: Cannot marshal the location objects!" + string(err.Error()))
+			return nil, err
+		}
+		locations = append(locations, location)
+	}
+
+	log.Println("INFO: List of all locations retrieved")
+	return locations, nil
 }

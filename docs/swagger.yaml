@@ -87,6 +87,13 @@ definitions:
       location:
         type: string
     type: object
+  model.LocationList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Location'
+        type: array
+    type: object
   model.Panel:
     properties:
       Id:
@@ -514,6 +521,23 @@ paths:
       security:
       - BasicAuth: []
       summary: Create a new location
+      tags:
+      - locations
+  /locations:
+    get:
+      description: Retrieve list of all location objects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LocationList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all location objects
       tags:
       - locations
   /panel:

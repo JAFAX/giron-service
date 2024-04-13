@@ -490,6 +490,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/locations": {
+            "get": {
+                "description": "Retrieve list of all location objects",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "locations"
+                ],
+                "summary": "Retrieve list of all location objects",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.LocationList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panel": {
             "post": {
                 "security": [
@@ -1196,6 +1222,17 @@ const docTemplate = `{
                 },
                 "location": {
                     "type": "string"
+                }
+            }
+        },
+        "model.LocationList": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Location"
+                    }
                 }
             }
         },

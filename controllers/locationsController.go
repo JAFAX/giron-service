@@ -73,8 +73,34 @@ func (g *GironService) CreateLocation(c *gin.Context) {
 
 	s, err := model.CreateLocation(json, userObject.Id)
 	if s {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Floor has been added to system"})
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Location has been added to system"})
 	} else {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+}
+
+// GetAllLocations Retrieve list of all location objects
+//
+//	@Summary		Retrieve list of all location objects
+//	@Description	Retrieve list of all location objects
+//	@Tags			locations
+//	@Produce		json
+//	@Success		200	{object}	model.LocationList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/locations [get]
+func (g *GironService) GetAllLocations(c *gin.Context) {
+	locations, err := model.GetAllLocations()
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of locations: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	if locations == nil {
+		log.Println("WARN: No locations returned")
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		log.Println("INFO: Returned list of locations")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": locations})
 	}
 }

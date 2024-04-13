@@ -45,10 +45,10 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/floors/buildingId/:id", i.GetFloorsByBuildingId) // get all floors in a building
 	g.GET("/floor/:id", i.GetFloorById)                      // get floor by Id
 	// location related routes
-	g.GET("/locations")                  // get all locations at the event
-	g.GET("/locations/byFloorId/:id")    // get locations by the floor id
-	g.GET("/locations/byBuildingId/:id") // get locations by building id
-	g.GET("/location/:id")               // get location by id
+	g.GET("/locations", i.GetAllLocations) // get all locations at the event
+	g.GET("/locations/byFloorId/:id")      // get locations by the floor id
+	g.GET("/locations/byBuildingId/:id")   // get locations by building id
+	g.GET("/location/:id")                 // get location by id
 	// panel related routes
 	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
 	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
