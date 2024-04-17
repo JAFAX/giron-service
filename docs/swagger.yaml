@@ -524,6 +524,32 @@ paths:
       tags:
       - locations
   /location/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a location by Id
+      parameters:
+      - description: Location Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Delete a location by Id
+      tags:
+      - locations
     get:
       description: Retrieve location by Id
       parameters:

@@ -79,6 +79,35 @@ func (g *GironService) CreateLocation(c *gin.Context) {
 	}
 }
 
+// DeleteLocationById Delete a location by its Id
+//
+//	@Summary		Delete a location by Id
+//	@Description	Delete a location by Id
+//	@Tags			locations
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Location Id"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/location/{id} [delete]
+func (g *GironService) DeleteLocationById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	status, err := model.DeleteLocationById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete location: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location! " + string(err.Error())})
+		return
+	}
+
+	if status {
+		idString := strconv.Itoa(id)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Location Id '" + idString + "' has been removed from system"})
+	} else {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location!"})
+	}
+}
+
 // GetAllLocations Retrieve list of all location objects
 //
 //	@Summary		Retrieve list of all location objects
