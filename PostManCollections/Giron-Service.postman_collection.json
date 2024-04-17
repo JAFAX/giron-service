@@ -627,6 +627,27 @@
 			"response": []
 		},
 		{
+			"name": "Delete Panel",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{serviceHost}}/api/v1/panel/{{Id}}",
+					"protocol": "http",
+					"host": [
+						"{{serviceHost}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"panel",
+						"{{Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete User",
 			"request": {
 				"method": "DELETE",

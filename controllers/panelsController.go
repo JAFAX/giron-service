@@ -79,6 +79,35 @@ func (g *GironService) CreatePanel(c *gin.Context) {
 	}
 }
 
+// DeletePanelById Delete a panel by its Id
+//
+//	@Summary		Delete a panel by Id
+//	@Description	Delete a panel by Id
+//	@Tags			panels
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"Panel Id"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panel/{id} [delete]
+func (g *GironService) DeletePanelById(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	status, err := model.DeletePanelById(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete panel: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Panel! " + string(err.Error())})
+		return
+	}
+
+	if status {
+		idString := strconv.Itoa(id)
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel Id '" + idString + "' has been removed from system"})
+	} else {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Panel!"})
+	}
+}
+
 // GetPanels Retrieve list of all panels
 //
 //	@Summary		Retrieve list of all panels

@@ -82,7 +82,7 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.POST("/panel/:id/location", i.SetPanelLocation) // set the location of a panel
 	g.POST("/panel/:id/schedule")                     // set the time and date of a panel
 	g.POST("/panel/:id/approve")                      // approve a panel
-	g.DELETE("/panel/:id")                            // delete a panel
+	g.DELETE("/panel/:id", i.DeletePanelById)         // delete a panel
 	// user related routes
 	g.POST("/user", i.CreateUser)                   // create new user
 	g.PATCH("/user/:name", i.ChangeAccountPassword) // update a user password

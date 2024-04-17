@@ -54,6 +54,32 @@ func CreatePanel(p ProposedPanel, id int) (bool, error) {
 	return true, nil
 }
 
+func DeletePanelById(id int) (bool, error) {
+	log.Println("INFO: Panel deletion requested: " + strconv.Itoa(id))
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
+		return false, err
+	}
+
+	q, err := DB.Prepare("DELETE FROM Panels WHERE Id IS ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare the DB query!" + string(err.Error()))
+		return false, err
+	}
+
+	_, err = q.Exec(id)
+	if err != nil {
+		log.Println("ERROR: Cannot delete panel with id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: Panel with id '" + strconv.Itoa(id) + "' has been deleted")
+	return true, nil
+}
+
 func GetPanels() ([]PanelSQL, error) {
 	log.Println("INFO: List of panel objects requested")
 	rows, err := DB.Query("SELECT * FROM Panels")

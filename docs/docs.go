@@ -740,6 +740,47 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Delete a panel by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Delete a panel by Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Panel Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
             }
         },
         "/panel/{id}/location": {

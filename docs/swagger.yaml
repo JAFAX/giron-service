@@ -664,6 +664,32 @@ paths:
       tags:
       - panels
   /panel/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a panel by Id
+      parameters:
+      - description: Panel Id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Delete a panel by Id
+      tags:
+      - panels
     get:
       description: Retrieve panel by Id
       parameters:
