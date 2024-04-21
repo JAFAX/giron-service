@@ -207,3 +207,37 @@ func (g *GironService) GetLocationsByBuildingId(c *gin.Context) {
 	log.Println("INFO: Returned location object for building Id '" + strconv.Itoa(id) + "'")
 	c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
 }
+
+// UpdateLocationById Update location by Id
+//
+//	@Summary		Update location information
+//	@Description	Update location information
+//	@Tags			locations
+//	@Produce		json
+//	@Param			id	path	string	true	"Location Id"
+//	@Param			floor	body	model.LocationUpdate	true	"Location data"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/location/{id} [patch]
+func (g *GironService) UpdateLocationById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+	var json model.LocationUpdate
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// we don't need the status, since the error speaks for itself
+	_, err = model.UpdateLocationById(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Location updated"})
+}

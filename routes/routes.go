@@ -74,7 +74,7 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.DELETE("/floor/:id", i.DeleteFloorById) // delete a floor by its Id
 	// location related routes
 	g.POST("/location", i.CreateLocation)           // create locations in the building
-	g.PATCH("/location/:id")                        // update locations in the building by id
+	g.PATCH("/location/:id", i.UpdateLocationById)  // update locations in the building by id
 	g.DELETE("/location/:id", i.DeleteLocationById) // delete a location by id
 	// panel related routes
 	g.GET("/panels/all", i.GetPanels)                 // get all panels

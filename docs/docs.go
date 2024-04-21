@@ -634,6 +634,53 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Update location information",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "locations"
+                ],
+                "summary": "Update location information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Location Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Location data",
+                        "name": "floor",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.LocationUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
             }
         },
         "/locations": {
@@ -1420,6 +1467,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.Location"
                     }
+                }
+            }
+        },
+        "model.LocationUpdate": {
+            "type": "object",
+            "properties": {
+                "buildingId": {
+                    "type": "integer"
+                },
+                "floorId": {
+                    "type": "integer"
                 }
             }
         },

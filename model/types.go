@@ -52,6 +52,11 @@ type FloorUpdate struct {
 	BuildingId int    `json:"buildingId"`
 }
 
+type LocationUpdate struct {
+	FloorId    int `json:"floorId"`
+	BuildingId int `json:"buildingId"`
+}
+
 type Location struct {
 	Id           int    `json:"Id"`
 	Location     string `json:"location"`

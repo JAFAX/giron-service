@@ -199,3 +199,30 @@ func GetLocationsByBuildingId(id int) ([]Location, error) {
 	log.Println("INFO: List of locations by building Id retrieved")
 	return locations, nil
 }
+
+func UpdateLocationById(id int, l LocationUpdate) (bool, error) {
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, err
+	}
+
+	q, err := t.Prepare("UPDATE Locations SET FloorId = ?, BuildingId = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, err
+	}
+	log.Println("INFO: Location ID to update: " + strconv.Itoa(id))
+	log.Println("INFO: Incoming data: Floor Id: " + strconv.Itoa(l.FloorId) + ", Building Id: " + strconv.Itoa(l.BuildingId))
+
+	_, err = q.Exec(l.FloorId, l.BuildingId, id)
+	if err != nil {
+		log.Println("ERROR: Cannot execute DB query: " + string(err.Error()))
+		return false, err
+	}
+
+	t.Commit()
+
+	log.Println("INFO: Location entry updated")
+	return true, nil
+}

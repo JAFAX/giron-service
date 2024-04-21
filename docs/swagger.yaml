@@ -94,6 +94,13 @@ definitions:
           $ref: '#/definitions/model.Location'
         type: array
     type: object
+  model.LocationUpdate:
+    properties:
+      buildingId:
+        type: integer
+      floorId:
+        type: integer
+    type: object
   model.Panel:
     properties:
       Id:
@@ -570,6 +577,36 @@ paths:
           schema:
             $ref: '#/definitions/model.FailureMsg'
       summary: Retrieve location by Id
+      tags:
+      - locations
+    patch:
+      description: Update location information
+      parameters:
+      - description: Location Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Location data
+        in: body
+        name: floor
+        required: true
+        schema:
+          $ref: '#/definitions/model.LocationUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Update location information
       tags:
       - locations
   /location/byBuildingId/{id}:
