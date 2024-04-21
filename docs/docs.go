@@ -445,6 +445,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/health": {
+            "get": {
+                "description": "Retrieve overall health of the service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "serviceHealth"
+                ],
+                "summary": "Retrieve overall health of the service",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.HealthCheck"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.HealthCheck"
+                        }
+                    }
+                }
+            }
+        },
         "/location": {
             "post": {
                 "security": [
@@ -1482,6 +1508,26 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "model.HealthCheck": {
+            "type": "object",
+            "properties": {
+                "db": {
+                    "type": "string"
+                },
+                "diskSpace": {
+                    "type": "string"
+                },
+                "diskWritable": {
+                    "type": "string"
+                },
+                "health": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },

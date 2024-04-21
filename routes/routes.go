@@ -59,8 +59,7 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/user/name/:name", i.GetUserByUserName) // get user by username
 	g.GET("/users", i.GetUsers)                    // get users
 	// service related routes
-	g.OPTIONS("/")   // API options
-	g.GET("/health") // service health
+	g.GET("/health", i.GetHealth) // service health
 }
 
 func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {

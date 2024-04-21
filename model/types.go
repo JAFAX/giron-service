@@ -41,6 +41,14 @@ type BuildingFloor struct {
 	CreationDate string `json:"creationDateTime"`
 }
 
+type HealthCheck struct {
+	Db           string `json:"db"`
+	DiskSpace    string `json:"diskSpace"`
+	DiskWritable string `json:"diskWritable"`
+	Health       string `json:"health"`
+	Status       int    `json:"status"`
+}
+
 type BuildingUpdate struct {
 	Name   string `json:"name"`
 	City   string `json:"city"`
