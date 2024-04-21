@@ -128,6 +128,11 @@ definitions:
       topic:
         type: string
     type: object
+  model.PanelApproval:
+    properties:
+      state:
+        type: boolean
+    type: object
   model.PanelList:
     properties:
       data:
@@ -730,7 +735,7 @@ paths:
     get:
       description: Retrieve panel by Id
       parameters:
-      - description: Building Id
+      - description: Panel Id
         in: path
         name: id
         required: true
@@ -749,11 +754,42 @@ paths:
       summary: Retrieve panel by Id
       tags:
       - panels
+  /panel/{id}/approve:
+    post:
+      description: Set panel location
+      parameters:
+      - description: Panel Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Approval data
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/model.PanelApproval'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Set panel location
+      tags:
+      - panels
   /panel/{id}/location:
     get:
       description: Retrieve panel location by the panel Id
       parameters:
-      - description: Building Id
+      - description: Panel Id
         in: path
         name: id
         required: true
@@ -800,7 +836,7 @@ paths:
     get:
       description: Retrieve panel schedule by the panel Id
       parameters:
-      - description: Building Id
+      - description: Panel Id
         in: path
         name: id
         required: true

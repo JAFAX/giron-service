@@ -200,7 +200,7 @@ func GetPanelScheduleByPanelId(id int) (Schedule, error) {
 }
 
 func SetPanelLocation(id int, j Location) (bool, error) {
-	log.Println("INFO: Set user status for panel Id '" + strconv.Itoa(id) + "'")
+	log.Println("INFO: Set location for panel Id '" + strconv.Itoa(id) + "'")
 	t, err := DB.Begin()
 	if err != nil {
 		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
@@ -230,5 +230,33 @@ func SetPanelLocation(id int, j Location) (bool, error) {
 	t.Commit()
 
 	log.Println("INFO: SQL result: Rows: " + strconv.Itoa(int(numberOfRows)))
+	return true, nil
+}
+
+func SetApprovalStatusPanelById(id int, status PanelApproval) (bool, error) {
+	log.Println("INFO: Set Approval status for panel Id '" + strconv.Itoa(id) + "'")
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, err
+	}
+	q, err := DB.Prepare("UPDATE Panels SET ApprovalStatus = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, err
+	}
+	result, err := q.Exec(status, id)
+	if err != nil {
+		log.Println("ERROR: Could not execute query for panel Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+	numberOfRows, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	log.Println("INFO: SQL result: Rows: " + strconv.Itoa(int(numberOfRows)))
+	t.Commit()
+
 	return true, nil
 }

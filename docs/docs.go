@@ -767,7 +767,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Building Id",
+                        "description": "Panel Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -830,6 +830,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/panel/{id}/approve": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Set panel location",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Set panel location",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Panel Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Approval data",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PanelApproval"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/{id}/location": {
             "get": {
                 "description": "Retrieve panel location by the panel Id",
@@ -843,7 +892,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Building Id",
+                        "description": "Panel Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -916,7 +965,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Building Id",
+                        "description": "Panel Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1519,6 +1568,14 @@ const docTemplate = `{
                 },
                 "topic": {
                     "type": "string"
+                }
+            }
+        },
+        "model.PanelApproval": {
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "boolean"
                 }
             }
         },

@@ -229,7 +229,7 @@ func (g *GironService) GetApprovedPanels(c *gin.Context) {
 //	@Description	Retrieve panel by Id
 //	@Tags			panels
 //	@Produce		json
-//	@Param			id	path	string	true	"Building Id"
+//	@Param			id	path	string	true	"Panel Id"
 //	@Success		200	{object}	model.Panel
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id} [get]
@@ -255,7 +255,7 @@ func (g *GironService) GetPanelById(c *gin.Context) {
 //	@Description	Retrieve panel location by the panel Id
 //	@Tags			panels
 //	@Produce		json
-//	@Param			id	path	string	true	"Building Id"
+//	@Param			id	path	string	true	"Panel Id"
 //	@Success		200	{object}	model.Location
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id}/location [get]
@@ -276,7 +276,7 @@ func (g *GironService) GetPanelLocationByPanelId(c *gin.Context) {
 //	@Description	Retrieve panel schedule by the panel Id
 //	@Tags			panels
 //	@Produce		json
-//	@Param			id	path	string	true	"Building Id"
+//	@Param			id	path	string	true	"Panel Id"
 //	@Success		200	{object}	model.Schedule
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/panel/{id}/schedule [get]
@@ -322,4 +322,41 @@ func (g *GironService) SetPanelLocation(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
+}
+
+// SetApprovalStatusPanelById Set the approval status of a panel
+//
+//	@Summary		Set panel location
+//	@Description	Set panel location
+//	@Tags			panels
+//	@Produce		json
+//	@Param			id	path	string	true	"Panel Id"
+//	@Param			json body	model.PanelApproval true	"Approval data"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panel/{id}/approve [post]
+func (g *GironService) SetApprovalStatusPanelById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+	var json model.PanelApproval
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	status, err := model.SetApprovalStatusPanelById(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	if status {
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel approved"})
+	} else {
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel not approved"})
+	}
 }

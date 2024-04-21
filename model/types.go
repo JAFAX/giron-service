@@ -96,6 +96,10 @@ type PanelSQL struct {
 	ApprovalDateTime    sql.NullString `json:"approvalDateTime"`
 }
 
+type PanelApproval struct {
+	State bool `json:"state"`
+}
+
 type PasswordChange struct {
 	OldPassword string `json:"oldPassword"`
 	NewPassword string `json:"newPassword"`
