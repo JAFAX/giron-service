@@ -82,6 +82,7 @@ type Panel struct {
 	Location            string `json:"location"`
 	ScheduledTime       string `json:"scheduledTime"`
 	DurationInMinutes   int    `json:"durationInMinutes"`
+	AgeRestricted       bool   `json:"ageRestricted"`
 	CreatorId           int    `json:"creatorId"`
 	CreationDateTime    string `json:"creationDateTime"`
 	ApprovalStatus      bool   `json:"approvalStatus"`
@@ -97,6 +98,7 @@ type PanelSQL struct {
 	Location            string         `json:"location"`
 	ScheduledTime       sql.NullString `json:"scheduledTime"`
 	DurationInMinutes   int            `json:"durationInMinutes"`
+	AgeRestricted       bool           `json:"ageRestricted"`
 	CreatorId           int            `json:"creatorId"`
 	CreationDateTime    string         `json:"creationDateTime"`
 	ApprovalStatus      bool           `json:"approvalStatus"`
@@ -104,8 +106,18 @@ type PanelSQL struct {
 	ApprovalDateTime    sql.NullString `json:"approvalDateTime"`
 }
 
+type PanelAgeRestrictionState struct {
+	RestrictionState bool `json:"restrictionState"`
+}
+
 type PanelApproval struct {
 	State bool `json:"state"`
+}
+
+type PanelScheduledTime struct {
+	LocationId        int    `json:"locationId"`
+	ScheduledTime     string `json:"scheduledTime"`
+	DurationInMinutes int    `json:"durationInMinutes"`
 }
 
 type PasswordChange struct {

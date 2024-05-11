@@ -978,6 +978,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/panel/{id}/restricted": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Set panel age restriction",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Set panel age restriction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Panel Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Age restriction state",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PanelAgeRestrictionState"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
         "/panel/{id}/schedule": {
             "get": {
                 "description": "Retrieve panel schedule by the panel Id",
@@ -1011,6 +1060,53 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Set the scheduled time for a panel",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Set the scheduled time for a panel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Panel Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Scheduled Time",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PanelScheduledTime"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SuccessMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
             }
         },
         "/panels": {
@@ -1023,6 +1119,32 @@ const docTemplate = `{
                     "panels"
                 ],
                 "summary": "Retrieve list of all approved panels",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PanelList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/model.FailureMsg"
+                        }
+                    }
+                }
+            }
+        },
+        "/panels/ByLocationId/{id}": {
+            "get": {
+                "description": "Retrieve list of all approved panels by location Id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "panels"
+                ],
+                "summary": "Retrieve list of all approved panels by location Id",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1582,6 +1704,9 @@ const docTemplate = `{
                 "Id": {
                     "type": "integer"
                 },
+                "ageRestricted": {
+                    "type": "boolean"
+                },
                 "approvalDateTime": {
                     "type": "string"
                 },
@@ -1617,6 +1742,14 @@ const docTemplate = `{
                 }
             }
         },
+        "model.PanelAgeRestrictionState": {
+            "type": "object",
+            "properties": {
+                "restrictionState": {
+                    "type": "boolean"
+                }
+            }
+        },
         "model.PanelApproval": {
             "type": "object",
             "properties": {
@@ -1633,6 +1766,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.Panel"
                     }
+                }
+            }
+        },
+        "model.PanelScheduledTime": {
+            "type": "object",
+            "properties": {
+                "durationInMinutes": {
+                    "type": "integer"
+                },
+                "locationId": {
+                    "type": "integer"
+                },
+                "scheduledTime": {
+                    "type": "string"
                 }
             }
         },

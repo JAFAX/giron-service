@@ -22,6 +22,7 @@ import (
 	"database/sql"
 	"log"
 	"strconv"
+	"time"
 )
 
 func CreatePanel(p ProposedPanel, id int) (bool, error) {
@@ -100,6 +101,7 @@ func GetPanels() ([]PanelSQL, error) {
 			&panel.Location,
 			&panel.ScheduledTime,
 			&panel.DurationInMinutes,
+			&panel.AgeRestricted,
 			&panel.CreatorId,
 			&panel.CreationDateTime,
 			&panel.ApprovalStatus,
@@ -114,6 +116,56 @@ func GetPanels() ([]PanelSQL, error) {
 	}
 
 	log.Println("INFO: List of all panels retrieved")
+	return panels, nil
+}
+
+func GetPanelsByLocationId(id int) ([]PanelSQL, error) {
+	log.Println("INFO: Panels by location Id requested: Location Id: " + strconv.Itoa(id))
+	// first, take the location Id and get back the location name
+	rec, err := DB.Prepare("SELECT RoomName FROM Locations WHERE Id = ?")
+	if err != nil {
+		return nil, err
+	}
+
+	var locationName string
+	err = rec.QueryRow(id).Scan(
+		&locationName,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	// now that we have the location name, do the real query for the panels in that location
+	rows, err := DB.Query("SELECT * FROM Panels WHERE Location = ?", locationName)
+	if err != nil {
+		return nil, err
+	}
+
+	panels := make([]PanelSQL, 0)
+	for rows.Next() {
+		panel := PanelSQL{}
+		err = rows.Scan(
+			&panel.Id,
+			&panel.Topic,
+			&panel.Description,
+			&panel.PanelRequestorEmail,
+			&panel.Location,
+			&panel.ScheduledTime,
+			&panel.DurationInMinutes,
+			&panel.AgeRestricted,
+			&panel.CreatorId,
+			&panel.CreationDateTime,
+			&panel.ApprovalStatus,
+			&panel.ApprovedById,
+			&panel.ApprovalDateTime,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		panels = append(panels, panel)
+	}
+
 	return panels, nil
 }
 
@@ -134,6 +186,7 @@ func GetPanelById(id int) (Panel, error) {
 		&panel.Location,
 		&panel.ScheduledTime,
 		&panel.DurationInMinutes,
+		&panel.AgeRestricted,
 		&panel.CreatorId,
 		&panel.CreationDateTime,
 		&panel.ApprovalStatus,
@@ -233,19 +286,107 @@ func SetPanelLocation(id int, j Location) (bool, error) {
 	return true, nil
 }
 
-func SetApprovalStatusPanelById(id int, status PanelApproval) (bool, error) {
+func SetPanelScheduledTimeById(id int, json PanelScheduledTime) (bool, string, error) {
+	log.Println("INFO: Set scheduled time for panel Id '" + strconv.Itoa(id) + "'")
+
+	timeFormat := "2006-01-02 15:04:05"
+	panelParsedStartTime, err := time.Parse(timeFormat, json.ScheduledTime)
+	panelStartTimeInUnixTime := int(panelParsedStartTime.Unix())
+	if err != nil {
+		return false, "Could not convert from " + json.ScheduledTime + " to UNIX time", err
+	}
+
+	// first, get all panels by location Id
+	panels, err := GetPanelsByLocationId(json.LocationId)
+	if err != nil {
+		return false, "Could not get panels by location Id '" + strconv.Itoa(json.LocationId) + "'", err
+	}
+
+	var startTime string
+	for _, panel := range panels {
+		// now get the start time converted to UNIX time to check against
+		if panel.ScheduledTime.Valid || panel.DurationInMinutes != 0 {
+			startTime = panel.ScheduledTime.String
+			if startTime != "" {
+				parsedTime, _ := time.Parse(timeFormat, startTime)
+				startTimeUnixTime := int(parsedTime.Unix())
+				endTimeUnixTime := startTimeUnixTime + (panel.DurationInMinutes * 60)
+				if startTimeUnixTime == panelStartTimeInUnixTime ||
+					(panelStartTimeInUnixTime > startTimeUnixTime && panelStartTimeInUnixTime < endTimeUnixTime) {
+					return false, "Panel start time conflicts with existing panel in location", new(SchedulingConflict)
+				}
+			}
+		}
+	}
+
+	// assume panel time is nil or an empty string, so we should be able to assign the panel
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, json.ScheduledTime, err
+	}
+	q, err := DB.Prepare("UPDATE Panels SET ScheduledTime = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, json.ScheduledTime, err
+	}
+	result, err := q.Exec(json.ScheduledTime, id)
+	if err != nil {
+		log.Println("ERROR: Could not execute query for panel Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, json.ScheduledTime, err
+	}
+	numberOfRows, err := result.RowsAffected()
+	if err != nil {
+		return false, json.ScheduledTime, err
+	}
+
+	log.Println("INFO: SQL result: Rows: " + strconv.Itoa(int(numberOfRows)))
+	t.Commit()
+
+	return true, json.ScheduledTime, nil
+}
+
+func SetApprovalStatusPanelById(id int, status PanelApproval, userId int) (bool, error) {
 	log.Println("INFO: Set Approval status for panel Id '" + strconv.Itoa(id) + "'")
 	t, err := DB.Begin()
 	if err != nil {
 		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
 		return false, err
 	}
-	q, err := DB.Prepare("UPDATE Panels SET ApprovalStatus = ? WHERE Id = ?")
+	q, err := DB.Prepare("UPDATE Panels SET ApprovalStatus = ?, ApprovedById = ?, ApprovalDateTime = CURRENT_TIMESTAMP WHERE Id = ?")
 	if err != nil {
 		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
 		return false, err
 	}
-	result, err := q.Exec(status, id)
+	result, err := q.Exec(status.State, userId, id)
+	if err != nil {
+		log.Println("ERROR: Could not execute query for panel Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+		return false, err
+	}
+	numberOfRows, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	log.Println("INFO: SQL result: Rows: " + strconv.Itoa(int(numberOfRows)))
+	t.Commit()
+
+	return true, nil
+}
+
+func SetPanelAgeRestrictionById(id int, status PanelAgeRestrictionState) (bool, error) {
+	log.Println("INFO: Set age restriction status for panel Id '" + strconv.Itoa(id) + "'")
+	t, err := DB.Begin()
+	if err != nil {
+		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
+		return false, err
+	}
+	q, err := DB.Prepare("UPDATE Panels SET AgeRestricted = ? WHERE Id = ?")
+	if err != nil {
+		log.Println("ERROR: Could not prepare DB query! " + string(err.Error()))
+		return false, err
+	}
+	result, err := q.Exec(status.RestrictionState, id)
 	if err != nil {
 		log.Println("ERROR: Could not execute query for panel Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
 		return false, err

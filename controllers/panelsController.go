@@ -139,6 +139,8 @@ func (g *GironService) GetPanels(c *gin.Context) {
 		} else {
 			panelEnt.ScheduledTime = ""
 		}
+		panelEnt.DurationInMinutes = panel.DurationInMinutes
+		panelEnt.AgeRestricted = panel.AgeRestricted
 		panelEnt.CreatorId = panel.CreatorId
 		panelEnt.CreationDateTime = panel.CreationDateTime
 		panelEnt.ApprovalStatus = panel.ApprovalStatus
@@ -196,6 +198,72 @@ func (g *GironService) GetApprovedPanels(c *gin.Context) {
 			} else {
 				panelEnt.ScheduledTime = ""
 			}
+			panelEnt.DurationInMinutes = panel.DurationInMinutes
+			panelEnt.CreatorId = panel.CreatorId
+			panelEnt.CreationDateTime = panel.CreationDateTime
+			panelEnt.ApprovalStatus = panel.ApprovalStatus
+			if panel.ApprovedById.Valid {
+				panelEnt.ApprovedById = int(panel.ApprovedById.Int64)
+			} else {
+				panelEnt.ApprovedById = 0
+			}
+			if panel.ApprovalDateTime.Valid {
+				panelEnt.ApprovalDateTime = panel.ApprovalDateTime.String
+			} else {
+				panelEnt.ApprovalDateTime = ""
+			}
+
+			panelSlice = append(panelSlice, panelEnt)
+		}
+	}
+
+	if panels == nil {
+		log.Println("WARN: No panels returned")
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+	} else {
+		log.Println("INFO: Returned approved list of panels")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": panelSlice})
+	}
+}
+
+// GetPanelsByLocationId Retrieve list of all approved panels by location Id
+//
+//	@Summary		Retrieve list of all approved panels by location Id
+//	@Description	Retrieve list of all approved panels by location Id
+//	@Tags			panels
+//	@Produce		json
+//	@Success		200	{object}	model.PanelList
+//	@Failure		400	{object}	model.FailureMsg
+//	@Router			/panels/ByLocationId/{id} [get]
+func (g *GironService) GetPanelsByLocationId(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		return
+	}
+	panels, err := model.GetPanelsByLocationId(id)
+	if err != nil {
+		log.Println("ERROR: Cannot retrieve list of panels: " + string(err.Error()))
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	panelSlice := make([]model.Panel, 0)
+	for _, panel := range panels {
+		if panel.ApprovalStatus {
+			panelEnt := model.Panel{}
+			panelEnt.Id = panel.Id
+			panelEnt.Topic = panel.Topic
+			panelEnt.Description = panel.Description
+			panelEnt.PanelRequestorEmail = panel.PanelRequestorEmail
+			panelEnt.Location = panel.Location
+			if panel.ScheduledTime.Valid {
+				panelEnt.ScheduledTime = panel.ScheduledTime.String
+			} else {
+				panelEnt.ScheduledTime = ""
+			}
+			panelEnt.DurationInMinutes = panel.DurationInMinutes
+			panelEnt.AgeRestricted = panel.AgeRestricted
 			panelEnt.CreatorId = panel.CreatorId
 			panelEnt.CreationDateTime = panel.CreationDateTime
 			panelEnt.ApprovalStatus = panel.ApprovalStatus
@@ -324,6 +392,93 @@ func (g *GironService) SetPanelLocation(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
 }
 
+// SetPanelScheduledTimeById Set the panel's scheduled time
+//
+//	@Summary		Set the scheduled time for a panel
+//	@Description	Set the scheduled time for a panel
+//	@Tags			panels
+//	@Produce		json
+//	@Param			id	path	string	true	"Panel Id"
+//	@Param			json	body	model.PanelScheduledTime	true	"Scheduled Time"
+//	@Security		BasicAuth
+//	@Success		200	{object}	model.SuccessMsg
+//	@Failure		400 {object}	model.FailureMsg
+//	@Router			/panel/{id}/schedule [post]
+func (g *GironService) SetPanelScheduledTimeById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	var json model.PanelScheduledTime
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	status, msg, err := model.SetPanelScheduledTimeById(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	if status {
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel scheduled for " + msg})
+	} else {
+		c.IndentedJSON(http.StatusConflict, gin.H{"message": "Panel cannot be scheduled. Reason " + msg})
+	}
+}
+
+// SetPanelAgeRestrictionById Set the age restriction status of a panel
+//
+//	 @Summary		Set panel age restriction
+//		@Description	Set panel age restriction
+//		@Tags			panels
+//		@Produce		json
+//		@Param			id	path	string	true	"Panel Id"
+//		@Param			json body	model.PanelAgeRestrictionState true	"Age restriction state"
+//		@Security		BasicAuth
+//		@Success		200	{object}	model.SuccessMsg
+//		@Failure		400	{object}	model.FailureMsg
+//		@Router			/panel/{id}/restricted [post]
+func (g *GironService) SetPanelAgeRestrictionById(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	// get our current session
+	session := sessions.Default(c)
+	user := session.Get("user")
+	if user == nil {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+		return
+	}
+
+	_ = g.GetUserId(c)
+	var json model.PanelAgeRestrictionState
+	if err := c.ShouldBindJSON(&json); err != nil {
+	}
+
+	status, err := model.SetPanelAgeRestrictionById(id, json)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+		return
+	}
+
+	if status {
+		if json.RestrictionState {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel is age restricted"})
+		} else {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel is not age restricted"})
+		}
+	} else {
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel is not age restricted"})
+	}
+}
+
 // SetApprovalStatusPanelById Set the approval status of a panel
 //
 //	@Summary		Set panel location
@@ -342,20 +497,26 @@ func (g *GironService) SetApprovalStatusPanelById(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
 		return
 	}
+
+	userObject := g.GetUserId(c)
 	var json model.PanelApproval
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": string(err.Error())})
 		return
 	}
 
-	status, err := model.SetApprovalStatusPanelById(id, json)
+	status, err := model.SetApprovalStatusPanelById(id, json, userObject.Id)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
 		return
 	}
 
 	if status {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel approved"})
+		if json.State {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel approved"})
+		} else {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel unapproved"})
+		}
 	} else {
 		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel not approved"})
 	}

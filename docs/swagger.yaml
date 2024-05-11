@@ -118,6 +118,8 @@ definitions:
     properties:
       Id:
         type: integer
+      ageRestricted:
+        type: boolean
       approvalDateTime:
         type: string
       approvalStatus:
@@ -141,6 +143,11 @@ definitions:
       topic:
         type: string
     type: object
+  model.PanelAgeRestrictionState:
+    properties:
+      restrictionState:
+        type: boolean
+    type: object
   model.PanelApproval:
     properties:
       state:
@@ -152,6 +159,15 @@ definitions:
         items:
           $ref: '#/definitions/model.Panel'
         type: array
+    type: object
+  model.PanelScheduledTime:
+    properties:
+      durationInMinutes:
+        type: integer
+      locationId:
+        type: integer
+      scheduledTime:
+        type: string
     type: object
   model.PasswordChange:
     properties:
@@ -862,6 +878,37 @@ paths:
       summary: Set panel location
       tags:
       - panels
+  /panel/{id}/restricted:
+    post:
+      description: Set panel age restriction
+      parameters:
+      - description: Panel Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Age restriction state
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/model.PanelAgeRestrictionState'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Set panel age restriction
+      tags:
+      - panels
   /panel/{id}/schedule:
     get:
       description: Retrieve panel schedule by the panel Id
@@ -885,6 +932,36 @@ paths:
       summary: Retrieve panel schedule by the panel Id
       tags:
       - panels
+    post:
+      description: Set the scheduled time for a panel
+      parameters:
+      - description: Panel Id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Scheduled Time
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/model.PanelScheduledTime'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SuccessMsg'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      security:
+      - BasicAuth: []
+      summary: Set the scheduled time for a panel
+      tags:
+      - panels
   /panels:
     get:
       description: Retrieve list of all approved panels
@@ -900,6 +977,23 @@ paths:
           schema:
             $ref: '#/definitions/model.FailureMsg'
       summary: Retrieve list of all approved panels
+      tags:
+      - panels
+  /panels/ByLocationId/{id}:
+    get:
+      description: Retrieve list of all approved panels by location Id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PanelList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.FailureMsg'
+      summary: Retrieve list of all approved panels by location Id
       tags:
       - panels
   /panels/all:

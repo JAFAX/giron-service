@@ -33,3 +33,11 @@ type PasswordHashMismatch struct {
 func (p *PasswordHashMismatch) Error() string {
 	return "Password hashes do not match!"
 }
+
+type SchedulingConflict struct {
+	Err error
+}
+
+func (s *SchedulingConflict) Error() string {
+	return "Scheduling conflict: Start or end of event conflicts with existing scheduled event"
+}

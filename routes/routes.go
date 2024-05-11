@@ -50,10 +50,22 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/locations/byBuildingId/:id", i.GetLocationsByBuildingId) // get locations by building id
 	g.GET("/location/:id", i.GetLocationById)                        // get location by id
 	// panel related routes
-	g.GET("/panels", i.GetApprovedPanels)                     // get all approved panels
-	g.GET("/panel/:id", i.GetPanelById)                       // get approved panel details
-	g.GET("/panel/:id/location", i.GetPanelLocationByPanelId) // get the location of a panel
-	g.GET("/panel/:id/schedule", i.GetPanelScheduleByPanelId) // get the time and date of a panel
+	g.GET("/panels", i.GetApprovedPanels)                      // get all approved panels
+	g.GET("/panels/ByLocationId/:id", i.GetPanelsByLocationId) // get all approved panels by location ID
+	g.GET("/panel/:id", i.GetPanelById)                        // get panel details
+	g.GET("/panel/:id/location", i.GetPanelLocationByPanelId)  // get the location of a panel
+	g.GET("/panel/:id/schedule", i.GetPanelScheduleByPanelId)  // get the time and date of a panel
+	g.GET("/panel/:id/tags")
+	// screenings
+	g.GET("/screenings")
+	g.GET("/screenings/ByLocationId/:id")
+	g.GET("/screening/:id")
+	g.GET("/screening/:id/location")
+	g.GET("/screening/:id/schedule")
+	g.GET("/screening/:id/tags")
+	// tags
+	g.GET("/tags")
+	g.GET("/tag/:id")
 	// user related routes
 	g.GET("/user/id/:id", i.GetUserById)           // get user by id
 	g.GET("/user/name/:name", i.GetUserByUserName) // get user by username
@@ -76,12 +88,24 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.PATCH("/location/:id", i.UpdateLocationById)  // update locations in the building by id
 	g.DELETE("/location/:id", i.DeleteLocationById) // delete a location by id
 	// panel related routes
-	g.GET("/panels/all", i.GetPanels)                          // get all panels
-	g.POST("/panel", i.CreatePanel)                            // create a new panel event
-	g.POST("/panel/:id/location", i.SetPanelLocation)          // set the location of a panel
-	g.POST("/panel/:id/schedule")                              // set the time and date of a panel
-	g.POST("/panel/:id/approve", i.SetApprovalStatusPanelById) // approve a panel
-	g.DELETE("/panel/:id", i.DeletePanelById)                  // delete a panel
+	g.GET("/panels/all", i.GetPanels)                             // get all panels
+	g.POST("/panel", i.CreatePanel)                               // create a new panel event
+	g.POST("/panel/:id/location", i.SetPanelLocation)             // set/update the location of a panel
+	g.POST("/panel/:id/schedule", i.SetPanelScheduledTimeById)    // set/update the time and date of a panel
+	g.POST("/panel/:id/approve", i.SetApprovalStatusPanelById)    // approve a panel
+	g.POST("/panel/:id/restricted", i.SetPanelAgeRestrictionById) // set whether the panel is age restricted
+	g.POST("/panel/:id/assignTag")                                // assign a tag to a panel
+	g.PATCH("/panel/:id/unassignTag")                             // unassign a tag to a panel
+	g.DELETE("/panel/:id", i.DeletePanelById)                     // delete a panel
+	// screening related routes
+	g.POST("/screening")                  // create a new screening event
+	g.POST("/screening/:id/location")     // set/update the location of a screening
+	g.POST("/screening/:id/schedule")     // set/update the time and date of a screening
+	g.POST("/screening/:id/restricted")   // set/update whether a screening is age restricted
+	g.POST("/screening/:id/assignTag")    // assign a tag to a screening
+	g.PATCH("/screening/:id/unassignTag") // unassign a tag to a screening
+	g.DELETE("/screening/:id")            // delete a screening
+	// tag related routes
 	// user related routes
 	g.POST("/user", i.CreateUser)                   // create new user
 	g.PATCH("/user/:name", i.ChangeAccountPassword) // update a user password
