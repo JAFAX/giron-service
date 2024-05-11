@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "An API for managing panel events",
+        "description": "An API for managing and presenting panels and other events at a convention",
         "title": "Giron-Service",
         "contact": {
             "name": "Gary Greene",

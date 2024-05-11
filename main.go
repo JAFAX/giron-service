@@ -47,7 +47,7 @@ import (
 
 //	@title			Giron-Service
 //	@version		0.0.20
-//	@description	An API for managing panel events
+//	@description	An API for managing and presenting panels and other events at a convention
 
 //	@contact.name	Gary Greene
 //	@contact.url	https://github.com/JAFAX/giron-service

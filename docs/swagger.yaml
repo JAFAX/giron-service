@@ -258,7 +258,7 @@ info:
   contact:
     name: Gary Greene
     url: https://github.com/JAFAX/giron-service
-  description: An API for managing panel events
+  description: An API for managing and presenting panels and other events at a convention
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html

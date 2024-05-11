@@ -1929,7 +1929,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Giron-Service",
-	Description:      "An API for managing panel events",
+	Description:      "An API for managing and presenting panels and other events at a convention",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
