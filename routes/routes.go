@@ -55,17 +55,17 @@ func PublicRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.GET("/panel/:id", i.GetPanelById)                        // get panel details
 	g.GET("/panel/:id/location", i.GetPanelLocationByPanelId)  // get the location of a panel
 	g.GET("/panel/:id/schedule", i.GetPanelScheduleByPanelId)  // get the time and date of a panel
-	g.GET("/panel/:id/tags")
+	g.GET("/panel/:id/tags")                                   // get a list of tags associated with a panel
 	// screenings
-	g.GET("/screenings")
-	g.GET("/screenings/ByLocationId/:id")
-	g.GET("/screening/:id")
-	g.GET("/screening/:id/location")
-	g.GET("/screening/:id/schedule")
-	g.GET("/screening/:id/tags")
+	g.GET("/screenings")                  // get all screenings
+	g.GET("/screenings/ByLocationId/:id") // get all screenings by location ID
+	g.GET("/screening/:id")               // get screening details
+	g.GET("/screening/:id/location")      // get the location of a screening
+	g.GET("/screening/:id/schedule")      // get the time and date of a screening
+	g.GET("/screening/:id/tags")          // get a list of tags associated with a screening
 	// tags
-	g.GET("/tags")
-	g.GET("/tag/:id")
+	g.GET("/tags")    // get all tags
+	g.GET("/tag/:id") // get tag details
 	// user related routes
 	g.GET("/user/id/:id", i.GetUserById)           // get user by id
 	g.GET("/user/name/:name", i.GetUserByUserName) // get user by username
@@ -106,6 +106,9 @@ func PrivateRoutes(g *gin.RouterGroup, i *controllers.GironService) {
 	g.PATCH("/screening/:id/unassignTag") // unassign a tag to a screening
 	g.DELETE("/screening/:id")            // delete a screening
 	// tag related routes
+	g.POST("/tag")       // create a new tag
+	g.PATCH("/tag/:id")  // update a new tag
+	g.DELETE("/tag/:id") // delete a tag
 	// user related routes
 	g.POST("/user", i.CreateUser)                   // create new user
 	g.PATCH("/user/:name", i.ChangeAccountPassword) // update a user password
