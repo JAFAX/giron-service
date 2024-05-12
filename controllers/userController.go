@@ -39,18 +39,23 @@ import (
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user [post]
-func (i *GironService) CreateUser(c *gin.Context) {
-	var json model.ProposedUser
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func (g *GironService) CreateUser(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		var json model.ProposedUser
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	s, err := model.CreateUser(json)
-	if s {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "User has been added to system"})
+		s, err := model.CreateUser(json)
+		if s {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "User has been added to system"})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -100,19 +105,24 @@ func (i *GironService) ChangeAccountPassword(c *gin.Context) {
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/{name} [delete]
-func (i *GironService) DeleteUser(c *gin.Context) {
-	username := c.Param("name")
-	status, err := model.DeleteUser(username)
-	if err != nil {
-		log.Println("ERROR: Cannot delete user: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove user! " + string(err.Error())})
-		return
-	}
+func (g *GironService) DeleteUser(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		username := c.Param("name")
+		status, err := model.DeleteUser(username)
+		if err != nil {
+			log.Println("ERROR: Cannot delete user: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove user! " + string(err.Error())})
+			return
+		}
 
-	if status {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "User " + username + " has been removed from system"})
+		if status {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "User " + username + " has been removed from system"})
+		} else {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove user!"})
+		}
 	} else {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove user!"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -156,24 +166,29 @@ func (i *GironService) GetUserStatus(c *gin.Context) {
 //	@Success		200	{object}	model.UserStatusMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/{name}/status [patch]
-func (i *GironService) SetUserStatus(c *gin.Context) {
-	username := c.Param("name")
-	var json model.UserStatus
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func (g *GironService) SetUserStatus(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		username := c.Param("name")
+		var json model.UserStatus
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	status, err := model.SetUserStatus(username, json)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+		status, err := model.SetUserStatus(username, json)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	if status {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "User '" + username + "' has been " + json.Status})
+		if status {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "User '" + username + "' has been " + json.Status})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
