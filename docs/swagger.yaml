@@ -263,7 +263,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Giron-Service
-  version: 0.0.20
+  version: 0.0.40
 paths:
   /building:
     post:

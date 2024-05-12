@@ -46,7 +46,7 @@ import (
 )
 
 //	@title			Giron-Service
-//	@version		0.0.20
+//	@version		0.0.40
 //	@description	An API for managing and presenting panels and other events at a convention
 
 //	@contact.name	Gary Greene
