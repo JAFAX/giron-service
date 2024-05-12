@@ -19,13 +19,11 @@ package controllers
 */
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/JAFAX/giron-service/model"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,40 +40,22 @@ import (
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building [post]
 func (g *GironService) CreateBuilding(c *gin.Context) {
-	var json model.ProposedBuilding
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	userObject, authed := g.GetUserId(c)
+	if authed {
+		var json model.ProposedBuilding
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	// need to get our current user context to get the CreatorId
-	session := sessions.Default(c)
-	user := session.Get("user")
-	// if nil, we have an issue
-	if user == nil {
-		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
-		return
-	}
-
-	// convert user interface to a string
-	username := fmt.Sprintf("%v", user)
-	// lets output our session user
-	log.Println("INFO: Session user: " + username)
-	// get our user id
-	userObject, err := model.GetUserByUserName(username)
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-
-	// what is our user Id
-	log.Println("INFO: Session user's ID: " + strconv.Itoa(userObject.Id))
-
-	s, err := model.CreateBuilding(json, userObject.Id)
-	if s {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Building has been added to system"})
+		s, err := model.CreateBuilding(json, userObject.Id)
+		if s {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Building has been added to system"})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -146,25 +126,30 @@ func (g *GironService) GetBuildingById(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [patch]
 func (g *GironService) UpdateBuildingById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
-	var json model.BuildingUpdate
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
+		var json model.BuildingUpdate
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	// we don't need the status, since the error speaks for itself
-	_, err = model.UpdateBuildingById(id, json)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+		// we don't need the status, since the error speaks for itself
+		_, err = model.UpdateBuildingById(id, json)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Panel location updated"})
+	} else {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+	}
 }
 
 // DeleteBuildingById Delete a building by its Id
@@ -180,18 +165,23 @@ func (g *GironService) UpdateBuildingById(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [delete]
 func (g *GironService) DeleteBuildingById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	status, err := model.DeleteBuildingById(id)
-	if err != nil {
-		log.Println("ERROR: Cannot delete building: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building! " + string(err.Error())})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		status, err := model.DeleteBuildingById(id)
+		if err != nil {
+			log.Println("ERROR: Cannot delete building: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building! " + string(err.Error())})
+			return
+		}
 
-	if status {
-		idString := strconv.Itoa(id)
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Building Id '" + idString + "' has been removed from system"})
+		if status {
+			idString := strconv.Itoa(id)
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Building Id '" + idString + "' has been removed from system"})
+		} else {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building!"})
+		}
 	} else {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove building!"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
