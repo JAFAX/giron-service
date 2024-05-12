@@ -11,14 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (g *GironService) GetUserId(c *gin.Context) model.User {
+func (g *GironService) GetUserId(c *gin.Context) (model.User, bool) {
 	// need to get our current user context to get the CreatorId
 	session := sessions.Default(c)
 	user := session.Get("user")
 	// if nil, we have an issue
 	if user == nil {
-		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
-		return model.User{}
+		return model.User{}, false
 	}
 
 	// convert user interface to a string
@@ -29,10 +28,10 @@ func (g *GironService) GetUserId(c *gin.Context) model.User {
 	userObject, err := model.GetUserByUserName(username)
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
-		return model.User{}
+		return model.User{}, false
 	}
 
 	// what is our user Id
 	log.Println("INFO: Session user's ID: " + strconv.Itoa(userObject.Id))
-	return userObject
+	return userObject, true
 }
