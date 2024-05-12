@@ -72,24 +72,29 @@ func (g *GironService) CreateUser(c *gin.Context) {
 //	@Success		200	{object}	model.SuccessMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/{name} [patch]
-func (i *GironService) ChangeAccountPassword(c *gin.Context) {
-	username := c.Param("name")
-	var json model.PasswordChange
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+func (g *GironService) ChangeAccountPassword(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		username := c.Param("name")
+		var json model.PasswordChange
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	status, err := model.ChangeAccountPassword(username, json.OldPassword, json.NewPassword)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+		status, err := model.ChangeAccountPassword(username, json.OldPassword, json.NewPassword)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	if status {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "User '" + username + "' has changed their password"})
+		if status {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "User '" + username + "' has changed their password"})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "User password could not be updated!"})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "User password could not be updated!"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -138,18 +143,23 @@ func (g *GironService) DeleteUser(c *gin.Context) {
 //	@Success		200	{object}	model.UserStatusMsg
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/{name}/status [get]
-func (i *GironService) GetUserStatus(c *gin.Context) {
-	username := c.Param("name")
-	status, err := model.GetUserStatus(username)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to get the user " + username + " status: " + string(err.Error())})
-		return
-	}
+func (g *GironService) GetUserStatus(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		username := c.Param("name")
+		status, err := model.GetUserStatus(username)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to get the user " + username + " status: " + string(err.Error())})
+			return
+		}
 
-	if status != "" {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "User status: " + status, "userStatus": status})
+		if status != "" {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "User status: " + status, "userStatus": status})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Unable to retrieve user status"})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Unable to retrieve user status"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
