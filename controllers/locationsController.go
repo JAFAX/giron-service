@@ -19,13 +19,11 @@ package controllers
 */
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/JAFAX/giron-service/model"
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,40 +40,22 @@ import (
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location [post]
 func (g *GironService) CreateLocation(c *gin.Context) {
-	var json model.ProposedLocation
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	userObject, authed := g.GetUserId(c)
+	if authed {
+		var json model.ProposedLocation
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	// need to get our current user context to get the CreatorId
-	session := sessions.Default(c)
-	user := session.Get("user")
-	// if nil, we have an issue
-	if user == nil {
-		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
-		return
-	}
-
-	// convert user interface to a string
-	username := fmt.Sprintf("%v", user)
-	// lets output our session user
-	log.Println("INFO: Session user: " + username)
-	// get our user id
-	userObject, err := model.GetUserByUserName(username)
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err})
-		return
-	}
-
-	// what is our user Id
-	log.Println("INFO: Session user's ID: " + strconv.Itoa(userObject.Id))
-
-	s, err := model.CreateLocation(json, userObject.Id)
-	if s {
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Location has been added to system"})
+		s, err := model.CreateLocation(json, userObject.Id)
+		if s {
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Location has been added to system"})
+		} else {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -92,19 +72,24 @@ func (g *GironService) CreateLocation(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location/{id} [delete]
 func (g *GironService) DeleteLocationById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	status, err := model.DeleteLocationById(id)
-	if err != nil {
-		log.Println("ERROR: Cannot delete location: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location! " + string(err.Error())})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		status, err := model.DeleteLocationById(id)
+		if err != nil {
+			log.Println("ERROR: Cannot delete location: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location! " + string(err.Error())})
+			return
+		}
 
-	if status {
-		idString := strconv.Itoa(id)
-		c.IndentedJSON(http.StatusOK, gin.H{"message": "Location Id '" + idString + "' has been removed from system"})
+		if status {
+			idString := strconv.Itoa(id)
+			c.IndentedJSON(http.StatusOK, gin.H{"message": "Location Id '" + idString + "' has been removed from system"})
+		} else {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location!"})
+		}
 	} else {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Unable to remove Location!"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -221,23 +206,28 @@ func (g *GironService) GetLocationsByBuildingId(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location/{id} [patch]
 func (g *GironService) UpdateLocationById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
-	var json model.LocationUpdate
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
+		var json model.LocationUpdate
+		if err := c.ShouldBindJSON(&json); err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	// we don't need the status, since the error speaks for itself
-	_, err = model.UpdateLocationById(id, json)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+		// we don't need the status, since the error speaks for itself
+		_, err = model.UpdateLocationById(id, json)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	c.IndentedJSON(http.StatusOK, gin.H{"message": "Location updated"})
+		c.IndentedJSON(http.StatusOK, gin.H{"message": "Location updated"})
+	} else {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+	}
 }
