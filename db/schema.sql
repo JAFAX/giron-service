@@ -1,10 +1,36 @@
 --
--- File generated with SQLiteStudio v3.4.4 on Sat Apr 6 12:04:50 2024
+-- File generated with SQLiteStudio v3.4.4 on Sat May 11 21:00:54 2024
 --
 -- Text encoding used: UTF-8
 --
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
+
+-- Table: AssignedPanelTags
+DROP TABLE IF EXISTS AssignedPanelTags;
+
+CREATE TABLE IF NOT EXISTS AssignedPanelTags (
+    Id      INTEGER PRIMARY KEY AUTOINCREMENT
+                    NOT NULL,
+    TagId   INTEGER REFERENCES Tags (Id) 
+                    NOT NULL,
+    PanelId INTEGER REFERENCES Panels (Id) 
+                    NOT NULL
+);
+
+
+-- Table: AssignedVideoScreeningTags
+DROP TABLE IF EXISTS AssignedVideoScreeningTags;
+
+CREATE TABLE IF NOT EXISTS AssignedVideoScreeningTags (
+    Id          INTEGER PRIMARY KEY AUTOINCREMENT
+                        NOT NULL,
+    TagId       INTEGER REFERENCES Tags (Id) 
+                        NOT NULL,
+    ScreeningId INTEGER REFERENCES VideoScreenings (Id) 
+                        NOT NULL
+);
+
 
 -- Table: BuildingFloors
 DROP TABLE IF EXISTS BuildingFloors;
@@ -77,6 +103,8 @@ CREATE TABLE IF NOT EXISTS Panels (
     ScheduledTime       DATETIME DEFAULT "",
     DurationInMinutes   INTEGER  NOT NULL
                                  DEFAULT (30),
+    AgeRestricted       BOOL     NOT NULL
+                                 DEFAULT (FALSE),
     CreatorId           INTEGER  NOT NULL
                                  REFERENCES Users (Id),
     CreationDateTime    DATETIME NOT NULL
@@ -89,19 +117,13 @@ CREATE TABLE IF NOT EXISTS Panels (
 );
 
 
--- Table: ScheduledEvents
-DROP TABLE IF EXISTS ScheduledEvents;
+-- Table: Tags
+DROP TABLE IF EXISTS Tags;
 
-CREATE TABLE IF NOT EXISTS ScheduledEvents (
-    Id                INTEGER  PRIMARY KEY AUTOINCREMENT
-                               UNIQUE
-                               NOT NULL,
-    RoomId            INTEGER  REFERENCES Locations (Id) 
-                               NOT NULL,
-    EventId           INTEGER  REFERENCES Panels (Id) 
-                               NOT NULL,
-    ScheduledTime     DATETIME NOT NULL,
-    DurationInMinutes INTEGER  NOT NULL
+CREATE TABLE IF NOT EXISTS Tags (
+    Id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    TagName STRING  UNIQUE
+                    NOT NULL
 );
 
 
@@ -121,6 +143,26 @@ CREATE TABLE IF NOT EXISTS Users (
                              DEFAULT (CURRENT_TIMESTAMP),
     LastChangedDate DATETIME NOT NULL
                              DEFAULT (CURRENT_TIMESTAMP) 
+);
+
+
+-- Table: VideoScreenings
+DROP TABLE IF EXISTS VideoScreenings;
+
+CREATE TABLE IF NOT EXISTS VideoScreenings (
+    Id                INTEGER  PRIMARY KEY AUTOINCREMENT
+                               NOT NULL,
+    Title             STRING   NOT NULL,
+    Synopsis          TEXT     NOT NULL,
+    Location          STRING,
+    ScheduledTime     DATETIME,
+    DurationInMinutes INTEGER  NOT NULL,
+    AgeRestricted     BOOL     NOT NULL
+                               DEFAULT (FALSE),
+    CreatorId         INTEGER  REFERENCES Users (Id) 
+                               NOT NULL,
+    CreationDateTime  DATETIME NOT NULL
+                               DEFAULT (CURRENT_TIMESTAMP) 
 );
 
 
