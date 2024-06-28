@@ -103,19 +103,24 @@ func (g *GironService) DeleteLocationById(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/locations [get]
 func (g *GironService) GetAllLocations(c *gin.Context) {
-	locations, err := model.GetAllLocations()
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve list of locations: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		locations, err := model.GetAllLocations()
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve list of locations: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if locations == nil {
-		log.Println("WARN: No locations returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if locations == nil {
+			log.Println("WARN: No locations returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned list of locations")
+			c.IndentedJSON(http.StatusOK, gin.H{"data": locations})
+		}
 	} else {
-		log.Println("INFO: Returned list of locations")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": locations})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -130,20 +135,25 @@ func (g *GironService) GetAllLocations(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location/{id} [get]
 func (g *GironService) GetLocationById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	ent, err := model.GetLocationById(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve location by Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ent, err := model.GetLocationById(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve location by Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if ent.Location == "" {
-		log.Println("WARN: No Location returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if ent.Location == "" {
+			log.Println("WARN: No Location returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned location object for Id '" + strconv.Itoa(id) + "'")
+			c.IndentedJSON(http.StatusOK, ent)
+		}
 	} else {
-		log.Println("INFO: Returned location object for Id '" + strconv.Itoa(id) + "'")
-		c.IndentedJSON(http.StatusOK, ent)
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -158,16 +168,21 @@ func (g *GironService) GetLocationById(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location/byFloorId/{id} [get]
 func (g *GironService) GetLocationsByFloorId(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	ent, err := model.GetLocationsByFloorId(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve locations by floor Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ent, err := model.GetLocationsByFloorId(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve locations by floor Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	log.Println("INFO: Returned location object for floor Id '" + strconv.Itoa(id) + "'")
-	c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+		log.Println("INFO: Returned location object for floor Id '" + strconv.Itoa(id) + "'")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+	} else {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+	}
 }
 
 // GetLocationsByBuildingId Retrieve list of locations by building Id
@@ -181,16 +196,21 @@ func (g *GironService) GetLocationsByFloorId(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/location/byBuildingId/{id} [get]
 func (g *GironService) GetLocationsByBuildingId(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	ent, err := model.GetLocationsByBuildingId(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve locations by building Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ent, err := model.GetLocationsByBuildingId(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve locations by building Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	log.Println("INFO: Returned location object for building Id '" + strconv.Itoa(id) + "'")
-	c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+		log.Println("INFO: Returned location object for building Id '" + strconv.Itoa(id) + "'")
+		c.IndentedJSON(http.StatusOK, gin.H{"data": ent})
+	} else {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+	}
 }
 
 // UpdateLocationById Update location by Id

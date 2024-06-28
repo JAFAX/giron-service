@@ -211,27 +211,32 @@ func (g *GironService) SetUserStatus(c *gin.Context) {
 //	@Success		200	{object}	model.UsersList
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/users [get]
-func (i *GironService) GetUsers(c *gin.Context) {
-	users, err := model.GetUsers()
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+func (g *GironService) GetUsers(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		users, err := model.GetUsers()
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	safeUsers := make([]SafeUser, 0)
-	for _, user := range users {
-		safeUser := SafeUser{}
-		safeUser.Id = user.Id
-		safeUser.UserName = user.UserName
-		safeUser.CreationDate = user.CreationDate
+		safeUsers := make([]SafeUser, 0)
+		for _, user := range users {
+			safeUser := SafeUser{}
+			safeUser.Id = user.Id
+			safeUser.UserName = user.UserName
+			safeUser.CreationDate = user.CreationDate
 
-		safeUsers = append(safeUsers, safeUser)
-	}
+			safeUsers = append(safeUsers, safeUser)
+		}
 
-	if users == nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if users == nil {
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			c.IndentedJSON(http.StatusOK, gin.H{"data": safeUsers})
+		}
 	} else {
-		c.IndentedJSON(http.StatusOK, gin.H{"data": safeUsers})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -245,25 +250,30 @@ func (i *GironService) GetUsers(c *gin.Context) {
 //	@Success		200	{object}	SafeUser
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/id/{id} [get]
-func (i *GironService) GetUserById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	ent, err := model.GetUserById(id)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+func (g *GironService) GetUserById(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ent, err := model.GetUserById(id)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	// don't return the password hash
-	safeUser := new(SafeUser)
-	safeUser.Id = ent.Id
-	safeUser.UserName = ent.UserName
-	safeUser.CreationDate = ent.CreationDate
+		// don't return the password hash
+		safeUser := new(SafeUser)
+		safeUser.Id = ent.Id
+		safeUser.UserName = ent.UserName
+		safeUser.CreationDate = ent.CreationDate
 
-	if ent.UserName == "" {
-		strId := strconv.Itoa(id)
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "no records found with user id " + strId})
+		if ent.UserName == "" {
+			strId := strconv.Itoa(id)
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "no records found with user id " + strId})
+		} else {
+			c.IndentedJSON(http.StatusOK, safeUser)
+		}
 	} else {
-		c.IndentedJSON(http.StatusOK, safeUser)
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -277,23 +287,28 @@ func (i *GironService) GetUserById(c *gin.Context) {
 //	@Success		200	{object}	SafeUser
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/user/name/{name} [get]
-func (i *GironService) GetUserByUserName(c *gin.Context) {
-	username := c.Param("name")
-	ent, err := model.GetUserByUserName(username)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
-		return
-	}
+func (g *GironService) GetUserByUserName(c *gin.Context) {
+	_, authed := g.GetUserId(c)
+	if authed {
+		username := c.Param("name")
+		ent, err := model.GetUserByUserName(username)
+		if err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": string(err.Error())})
+			return
+		}
 
-	// don't return the password hash
-	safeUser := new(SafeUser)
-	safeUser.Id = ent.Id
-	safeUser.UserName = ent.UserName
-	safeUser.CreationDate = ent.CreationDate
+		// don't return the password hash
+		safeUser := new(SafeUser)
+		safeUser.Id = ent.Id
+		safeUser.UserName = ent.UserName
+		safeUser.CreationDate = ent.CreationDate
 
-	if ent.UserName == "" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "no records found with user name " + username})
+		if ent.UserName == "" {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"error": "no records found with user name " + username})
+		} else {
+			c.IndentedJSON(http.StatusOK, safeUser)
+		}
 	} else {
-		c.IndentedJSON(http.StatusOK, safeUser)
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }

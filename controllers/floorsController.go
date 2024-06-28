@@ -103,19 +103,24 @@ func (g *GironService) DeleteFloorById(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/floors [get]
 func (g *GironService) GetAllFloors(c *gin.Context) {
-	floors, err := model.GetAllFloors()
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		floors, err := model.GetAllFloors()
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if floors == nil {
-		log.Println("WARN: No floors returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if floors == nil {
+			log.Println("WARN: No floors returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned floor list")
+			c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
+		}
 	} else {
-		log.Println("INFO: Returned floor list")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -130,20 +135,25 @@ func (g *GironService) GetAllFloors(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/floors/buildingId/{id} [get]
 func (g *GironService) GetFloorsByBuildingId(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	floors, err := model.GetFloorsByBuildingId(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		floors, err := model.GetFloorsByBuildingId(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if floors == nil {
-		log.Println("WARN: No floors returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if floors == nil {
+			log.Println("WARN: No floors returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned floor list")
+			c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
+		}
 	} else {
-		log.Println("INFO: Returned floor list")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": floors})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -158,16 +168,21 @@ func (g *GironService) GetFloorsByBuildingId(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/floor/{id} [get]
 func (g *GironService) GetFloorById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	floor, err := model.GetFloorById(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		floor, err := model.GetFloorById(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve list of floor records: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	log.Println("INFO: Returned floor list")
-	c.IndentedJSON(http.StatusOK, floor)
+		log.Println("INFO: Returned floor list")
+		c.IndentedJSON(http.StatusOK, floor)
+	} else {
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
+	}
 }
 
 // UpdateFloorById Update floor by Id

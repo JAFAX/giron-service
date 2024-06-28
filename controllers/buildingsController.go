@@ -69,19 +69,24 @@ func (g *GironService) CreateBuilding(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/buildings [get]
 func (g *GironService) GetBuildings(c *gin.Context) {
-	buildings, err := model.GetBuildings()
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve list of buildings: " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		buildings, err := model.GetBuildings()
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve list of buildings: " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if buildings == nil {
-		log.Println("WARN: No buildings returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if buildings == nil {
+			log.Println("WARN: No buildings returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned list of buildings")
+			c.IndentedJSON(http.StatusOK, gin.H{"data": buildings})
+		}
 	} else {
-		log.Println("INFO: Returned list of buildings")
-		c.IndentedJSON(http.StatusOK, gin.H{"data": buildings})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
@@ -96,20 +101,25 @@ func (g *GironService) GetBuildings(c *gin.Context) {
 //	@Failure		400	{object}	model.FailureMsg
 //	@Router			/building/{id} [get]
 func (g *GironService) GetBuildingById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
-	ent, err := model.GetBuildingById(id)
-	if err != nil {
-		log.Println("ERROR: Cannot retrieve building by Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
+	_, authed := g.GetUserId(c)
+	if authed {
+		id, _ := strconv.Atoi(c.Param("id"))
+		ent, err := model.GetBuildingById(id)
+		if err != nil {
+			log.Println("ERROR: Cannot retrieve building by Id '" + strconv.Itoa(id) + "': " + string(err.Error()))
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err})
+			return
+		}
 
-	if ent.Name == "" {
-		log.Println("WARN: No building returned")
-		c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		if ent.Name == "" {
+			log.Println("WARN: No building returned")
+			c.IndentedJSON(http.StatusNotFound, gin.H{"error": "no records found!"})
+		} else {
+			log.Println("INFO: Returned approved list of panels")
+			c.IndentedJSON(http.StatusOK, ent)
+		}
 	} else {
-		log.Println("INFO: Returned approved list of panels")
-		c.IndentedJSON(http.StatusOK, ent)
+		c.IndentedJSON(http.StatusForbidden, gin.H{"error": "Insufficient access. Access denied!"})
 	}
 }
 
