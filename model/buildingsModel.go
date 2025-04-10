@@ -32,10 +32,18 @@ func CreateBuilding(p ProposedBuilding, id int) (bool, error) {
 		log.Println("ERROR: Cannot start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
-	panelInfo := `INSERT INTO Buildings (
-		Name, City, Region, CreatorId)
-		VALUES (?, ?, ?, ?)`
+	panelInfo := `INSERT INTO Buildings (Name, City, Region, CreatorId) VALUES (?, ?, ?, ?)`
 	q, err := t.Prepare(panelInfo)
 	if err != nil {
 		log.Println("ERROR: Cannot prepare DB query: " + string(err.Error()))
@@ -48,10 +56,13 @@ func CreateBuilding(p ProposedBuilding, id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Panel entry created")
-
 	return true, nil
 }
 
@@ -61,16 +72,10 @@ func GetBuildingById(id int) (Building, error) {
 	if err != nil {
 		return Building{}, err
 	}
+	defer ent.Close()
 
 	building := Building{}
-	err = ent.QueryRow(id).Scan(
-		&building.Id,
-		&building.Name,
-		&building.City,
-		&building.Region,
-		&building.CreatorId,
-		&building.CreationDate,
-	)
+	record, err := ent.Query(id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			log.Println("ERROR: No such building found in DB: " + string(err.Error()))
@@ -79,6 +84,19 @@ func GetBuildingById(id int) (Building, error) {
 		log.Println("ERROR: Cannot retrieve building from DB: " + string(err.Error()))
 		return Building{}, err
 	}
+	err = record.Scan(
+		&building.Id,
+		&building.Name,
+		&building.City,
+		&building.Region,
+		&building.CreatorId,
+		&building.CreationDate,
+	)
+	if err != nil {
+		log.Println("ERROR: Cannot unmarshal the building object!" + string(err.Error()))
+		return Building{}, err
+	}
+	defer record.Close()
 
 	return building, nil
 }
@@ -90,11 +108,10 @@ func GetBuildingIdByName(buildingName string) (int, error) {
 		log.Println("ERROR: Cannot prepare SQL query: " + string(err.Error()))
 		return -1, err
 	}
+	defer ent.Close()
 
 	var id int
-	err = ent.QueryRow(buildingName).Scan(
-		&id,
-	)
+	record, err := ent.Query(buildingName)
 	if err != nil {
 		if err != sql.ErrNoRows {
 			log.Println("ERROR: No such building found in DB: " + string(err.Error()))
@@ -103,6 +120,14 @@ func GetBuildingIdByName(buildingName string) (int, error) {
 		log.Println("ERROR: Cannot retrieve building from DB: " + string(err.Error()))
 		return -1, err
 	}
+	err = record.Scan(
+		&id,
+	)
+	if err != nil {
+		log.Println("ERROR: Cannot unmarshal the building object!" + string(err.Error()))
+		return -1, err
+	}
+	defer record.Close()
 
 	return id, nil
 }
@@ -114,6 +139,7 @@ func GetBuildings() ([]Building, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	log.Println("INFO: Constructing building list")
 	buildings := make([]Building, 0)
@@ -144,6 +170,16 @@ func UpdateBuildingById(id int, b BuildingUpdate) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := t.Prepare("UPDATE Buildings SET Name = ?, City = ?, Region = ? WHERE Id = ?")
 	if err != nil {
@@ -164,7 +200,11 @@ func UpdateBuildingById(id int, b BuildingUpdate) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Building entry updated")
 	return true, nil
@@ -177,6 +217,16 @@ func DeleteBuildingById(id int) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := DB.Prepare("DELETE FROM Buildings WHERE Id IS ?")
 	if err != nil {
@@ -190,7 +240,11 @@ func DeleteBuildingById(id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Building with Id '" + strconv.Itoa(id) + "' has been deleted")
 	return true, nil
