@@ -31,6 +31,16 @@ func CreateFloor(f ProposedFloor, id int) (bool, error) {
 		log.Println("ERROR: Cannot start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	// get building ID from building name
 	buildingId, err := GetBuildingIdByName(f.BuildingName)
@@ -51,10 +61,13 @@ func CreateFloor(f ProposedFloor, id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Floor entry created")
-
 	return true, nil
 }
 
@@ -65,6 +78,16 @@ func DeleteFloorById(id int) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := DB.Prepare("DELETE FROM BuildingFloors WHERE Id IS ?")
 	if err != nil {
@@ -78,7 +101,11 @@ func DeleteFloorById(id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Floor with id '" + strconv.Itoa(id) + "' has been deleted")
 	return true, nil
@@ -91,6 +118,7 @@ func GetAllFloors() ([]BuildingFloor, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	floors := make([]BuildingFloor, 0)
 	for rows.Next() {
@@ -120,6 +148,7 @@ func GetFloorsByBuildingId(id int) ([]BuildingFloor, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	floors := make([]BuildingFloor, 0)
 	for rows.Next() {
@@ -149,9 +178,20 @@ func GetFloorById(id int) (BuildingFloor, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return BuildingFloor{}, err
 	}
+	defer ent.Close()
 
 	floor := BuildingFloor{}
-	err = ent.QueryRow(id).Scan(
+	record, err := ent.Query(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such floor found in DB: " + string(err.Error()))
+			return BuildingFloor{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve floor from DB: " + string(err.Error()))
+		return BuildingFloor{}, err
+	}
+	defer record.Close()
+	err = record.Scan(
 		&floor.Id,
 		&floor.FloorName,
 		&floor.BuildingId,
@@ -159,11 +199,7 @@ func GetFloorById(id int) (BuildingFloor, error) {
 		&floor.CreationDate,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			log.Println("ERROR: No such floor found in DB: " + string(err.Error()))
-			return BuildingFloor{}, nil
-		}
-		log.Println("ERROR: Cannot retrieve floor from DB: " + string(err.Error()))
+		log.Println("ERROR: Cannot unmarshal the floor object!" + string(err.Error()))
 		return BuildingFloor{}, err
 	}
 
@@ -177,6 +213,16 @@ func UpdateFloorById(id int, f FloorUpdate) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := t.Prepare("UPDATE BuildingFloors SET FloorName = ?, BuildingId = ? WHERE Id = ?")
 	if err != nil {
@@ -186,18 +232,17 @@ func UpdateFloorById(id int, f FloorUpdate) (bool, error) {
 	log.Println("INFO: Floor ID to update: " + strconv.Itoa(id))
 	log.Println("INFO: Incoming data: Floor name: " + f.FloorName + ", Building Id: " + strconv.Itoa(f.BuildingId))
 
-	//	floor, err := json.Marshal(f)
-	//	if err != nil {
-	//		log.Println("ERROR: Cannot marshal JSON: " + string(err.Error()))
-	//		return false, err
-	//	}
 	_, err = q.Exec(f.FloorName, f.BuildingId, id)
 	if err != nil {
 		log.Println("ERROR: Cannot execute DB query: " + string(err.Error()))
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Floor entry updated")
 	return true, nil
