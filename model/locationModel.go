@@ -31,10 +31,18 @@ func CreateLocation(p ProposedLocation, id int) (bool, error) {
 		log.Println("ERROR: Cannot start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
-	locationInfo := `INSERT INTO Locations (
-		RoomName, FloorId, BuildingId, CreatorId)
-		VALUES (?, ?, ?, ?)`
+	locationInfo := `INSERT INTO Locations (RoomName, FloorId, BuildingId, CreatorId) VALUES (?, ?, ?, ?)`
 	q, err := t.Prepare(locationInfo)
 	if err != nil {
 		log.Println("ERROR: Cannot prepare DB query: " + string(err.Error()))
@@ -47,10 +55,13 @@ func CreateLocation(p ProposedLocation, id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Location entry created")
-
 	return true, nil
 }
 
@@ -61,6 +72,16 @@ func DeleteLocationById(id int) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction!" + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := DB.Prepare("DELETE FROM Locations WHERE Id IS ?")
 	if err != nil {
@@ -74,7 +95,11 @@ func DeleteLocationById(id int) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Location with id '" + strconv.Itoa(id) + "' has been deleted")
 	return true, nil
@@ -87,6 +112,7 @@ func GetAllLocations() ([]Location, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	locations := make([]Location, 0)
 	for rows.Next() {
@@ -117,9 +143,20 @@ func GetLocationById(id int) (Location, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return Location{}, err
 	}
+	defer ent.Close()
 
 	location := Location{}
-	err = ent.QueryRow(id).Scan(
+	record, err := ent.Query(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("ERROR: No such location found in DB: " + string(err.Error()))
+			return Location{}, nil
+		}
+		log.Println("ERROR: Cannot retrieve location from DB: " + string(err.Error()))
+		return Location{}, err
+	}
+	defer record.Close()
+	err = record.Scan(
 		&location.Id,
 		&location.Location,
 		&location.FloorId,
@@ -128,11 +165,7 @@ func GetLocationById(id int) (Location, error) {
 		&location.CreationDate,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			log.Println("ERROR: No such location found in DB: " + string(err.Error()))
-			return Location{}, nil
-		}
-		log.Println("ERROR: Cannot retrieve location from DB: " + string(err.Error()))
+		log.Println("ERROR: Cannot unmarshal the location object!" + string(err.Error()))
 		return Location{}, err
 	}
 
@@ -147,6 +180,7 @@ func GetLocationsByFloorId(id int) ([]Location, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	locations := make([]Location, 0)
 	for rows.Next() {
@@ -177,6 +211,7 @@ func GetLocationsByBuildingId(id int) ([]Location, error) {
 		log.Println("ERROR: Could not run the DB query!" + string(err.Error()))
 		return nil, err
 	}
+	defer rows.Close()
 
 	locations := make([]Location, 0)
 	for rows.Next() {
@@ -206,6 +241,16 @@ func UpdateLocationById(id int, l LocationUpdate) (bool, error) {
 		log.Println("ERROR: Could not start DB transaction: " + string(err.Error()))
 		return false, err
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+		if err != nil {
+			log.Println("ERROR: DB transaction failed: " + string(err.Error()))
+			t.Rollback()
+		}
+	}()
 
 	q, err := t.Prepare("UPDATE Locations SET FloorId = ?, BuildingId = ? WHERE Id = ?")
 	if err != nil {
@@ -221,7 +266,11 @@ func UpdateLocationById(id int, l LocationUpdate) (bool, error) {
 		return false, err
 	}
 
-	t.Commit()
+	err = t.Commit()
+	if err != nil {
+		log.Println("ERROR: Cannot commit DB transaction: " + string(err.Error()))
+		return false, err
+	}
 
 	log.Println("INFO: Location entry updated")
 	return true, nil
